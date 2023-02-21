@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title">Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="normalize.css">
+
+    <!-- <link rel="stylesheet" href="libs/mobile-drag-drop/release/default.css">
+    <script src="libs/mobile-drag-drop/release/index.min.js"></script> -->
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <input type="text" id="currentUserName" placeholder="Enter your nickname">
+    <button id="singlePlayerBtn">Single Player</button>
+    <button id="multiPlayerBtn">Multiplayer</button>
+    <hr>
+    <div class="player p1">
+        Player 1
+        <div class="connected">Connected <span></span></div>
+        <div class="ready">Ready <span></span></div>
+    </div>
+    <hr>
+    <div class="player p2">
+        Player 2
+        <div class="connected">Connected <span></span></div>
+        <div class="ready">Ready <span></span></div>
+    </div>
+    <hr>
+    <header>
+        <h1>SeaBattle</h1>
+    </header>
+
+    <main>
+        <section>
+            <div class="container mover">
+                <!-- <h3 id="whose-go">Place Ships</h3> -->
+                <h3 id="whose-go">Розставте кораблі</h3>
+            </div>
+        </section>
+        <section class = "fields">
+            <div class="container">
+                <div class="playerName" id="user1name">PLAYER1</div>
+                <div class="user-grid"></div>
+                <div class="user-ships">
+                    <div class="ship-section ship-section1">
+                        <div id="ship1" class="ship">
+                            <div id="ss1_0" class="ss"></div>
+                            <div id="ss1_1" class="ss"></div>
+                            <div id="ss1_2" class="ss"></div>
+                            <div id="ss1_3" class="ss"></div>
+                        </div>
+                    </div>
+                    <div class="ship-section ship-section2">
+                        <div id="ship2" class="ship">
+                            <div id="ss2_0" class="ss"></div>
+                            <div id="ss2_1" class="ss"></div>
+                            <div id="ss2_2" class="ss"></div>
+                        </div>
+                        <div id="ship3" class="ship">
+                            <div id="ss3_0" class="ss"></div>
+                            <div id="ss3_1" class="ss"></div>
+                            <div id="ss3_2" class="ss"></div>
+                        </div>
+                    </div>
+                    <div class="ship-section ship-section3">
+                        <div id="ship4" class="ship">
+                            <div id="ss4_0" class="ss"></div>
+                            <div id="ss4_1" class="ss"></div>
+                        </div>
+                        <div id="ship5" class="ship">
+                            <div id="ss5_0" class="ss"></div>
+                            <div id="ss5_1" class="ss"></div>
+                        </div>
+                        <div id="ship6" class="ship">
+                            <div id="ss6_0" class="ss"></div>
+                            <div id="ss6_1" class="ss"></div>
+                        </div>
+                    </div>
+                    <div class="ship-section ship-section4">
+                        <div id="ship7" class="ship">
+                            <div id="ss7_0" class="ss"></div>
+                        </div>
+                        <div id="ship8" class="ship">
+                            <div id="ss8_0" class="ss"></div>
+                        </div>
+                        <div id="ship9" class="ship">
+                            <div id="ss9_0" class="ss"></div>
+                        </div>
+                        <div id="ship10" class="ship">
+                            <div id="ss10_0" class="ss"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <div class="container button-section">
+                    <!-- <button id="playGame" type="button" name="run_script">Start</button>
+                    <button id="randForMe" type="button" name="run_script">Random</button>
+                    <button id="dragDrop" type="button" name="run_script">By hands</button>
+                    <button id="rotate" type="button" name="run_script">Rotate</button>
+                    <button id="cleanMe" type="button" name="run_script">Clean</button> -->
+
+                    <button id="playGame" type="button" name="run_script">Старт</button>
+                    <button id="randForMe" type="button" name="run_script">Випадково</button>
+                    <button id="dragDrop" type="button" name="run_script">Вручну</button>
+                    <button id="rotate" type="button" name="run_script">Повернути</button>
+                    <button id="cleanMe" type="button" name="run_script">Очистити</button>
+
+                    <button id="restart" type="button" name="run_script">З Початку</button>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="playerName" id="user2name">PLAYER2</div>
+                <div class="computer-grid"></div>
+                <div class="computer-ships">
+                    <div class="ship-section eship-section1">
+                        <div id="enemyShip1" class="ship">
+                            <div id="ess1_0" class="ess"></div>
+                            <div id="ess1_1" class="ess"></div>
+                            <div id="ess1_2" class="ess"></div>
+                            <div id="ess1_3" class="ess"></div>
+                        </div>
+                    </div> 
+                    <div class="ship-section eship-section2">
+                        <div id="enemyShip2" class="ship">
+                            <div id="ess2_0" class="ess"></div>
+                            <div id="ess2_1" class="ess"></div>
+                            <div id="ess2_2" class="ess"></div>
+                        </div>
+                        <div id="enemyShip3" class="ship">
+                            <div id="ess3_0" class="ess"></div>
+                            <div id="ess3_1" class="ess"></div>
+                            <div id="ess3_2" class="ess"></div>
+                        </div>
+                    </div>
+                    <div class="ship-section eship-section3">
+                        <div id="enemyShip4" class="ship">
+                            <div id="ess4_0" class="ess"></div>
+                            <div id="ess4_1" class="ess"></div>
+                        </div>
+                        <div id="enemyShip5" class="ship">
+                            <div id="ess5_0" class="ess"></div>
+                            <div id="ess5_1" class="ess"></div>
+                        </div>
+                        <div id="enemyShip6" class="ship">
+                            <div id="ess6_0" class="ess"></div>
+                            <div id="ess6_1" class="ess"></div>
+                        </div>
+                    </div>
+                    <div class="ship-section eship-section4">
+                        <div id="enemyShip7" class="ship">
+                            <div id="ess7_0" class="ess"></div>
+                        </div>
+                        <div id="enemyShip8" class="ship">
+                            <div id="ess8_0" class="ess"></div>
+                        </div>
+                        <div id="enemyShip9" class="ship">
+                            <div id="ess9_0" class="ess"></div>
+                        </div>
+                        <div id="enemyShip10" class="ship">
+                            <div id="ess10_0" class="ess"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- <section class="invisible">
+            <button id="randForEnemy" type="button" name="run_script">Рандом для гравця2</button>
+            <button id="cleanEnemy" type="button" name="run_script">Очитити2</button>
+        </section> -->
+    </main>
+    
+    <footer>
+        <div class="footer-sec">
+            <p>
+                Гра розроблена для некомерційного користування <br>
+                студентом групи РПЗ 19 1/9 <br>
+                ЗНТУ ЗЕФК "Запорізька політехніка"<br>
+            </p>
+        </div>
+        <div class="footer-sec">
+            <h2>
+                Почніть своє довге плавання прямо зараз<br>
+                і перемагайте ворогів разом з нами!<br>
+            </h2>
+            
+        </div>
+        <div class="footer-sec">
+            <p>
+                Автор: ©KarMiGor <br>
+                Рік: 2022<br>
+            </p>   
+        </div>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,473 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    height: 100vh;
+}
+
+header,footer{
+    display: flex;
+    height: 10%;
+    width: 100%;
+    background-color:rgb(121, 160, 233);
+    /* //background-color:rgb(135, 187, 235); */
+}
+
+main{
+    background-color:bisque;
+    min-height: 80%;
+
+    display: flex !important;
+    flex-direction: column;
+}
+
+.playerName{
+    margin-bottom: 20px;
+}
+
+header > h1{
+    min-height: max-content;
+    display: flex;
+    margin-left: 50px;
+    font-size: 40px;
+    color:whitesmoke;
+    text-shadow: 5px 5px 10px royalblue, -5px -5px 10px palevioletred;
+}
+
+footer{
+    display: flex;
+    justify-content: space-between;
+    height: 10vh;
+}
+
+.footer-sec{
+    color: whitesmoke;
+    margin-inline: 20px;
+    line-height: 22px;
+    text-align: center;
+    min-width: 21%;
+}
+
+.user-grid,.computer-grid{
+    border: 1px solid lightcyan;
+}
+
+section{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.fields > .container {
+    margin-inline: 7vw;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    /* background-color: aquamarine; */
+    height: max-content;
+}
+
+.mover{
+    min-width: 350px;
+    text-align: center;
+    margin-top: 20px;
+    padding-inline: 20px;
+    background-color:cornflowerblue;
+    border: 5px dashed palevioletred;
+    border-radius: 20px;
+    color:whitesmoke;
+    font-size: 30px;
+}
+
+.container-g{
+    display: flex;
+    flex-direction: row;
+    /* background-color: aquamarine; */
+    height: max-content;
+    margin: 30px;
+}
+
+.user-grid,.computer-grid{
+    background-color: plum;
+    height: 300px;
+    width: 300px;
+    position: relative;
+}
+.user-ships,.computer-ships{
+    background-color: plum;
+    height: max-content;
+    max-height: 300px;
+    width: 300px;
+}
+
+.square{
+    height: 10%;
+    width: 10%;
+    background-color: skyblue;
+    border: 1px solid lightcyan; 
+    float: left;
+}
+/* .square:hover{
+    background-color: gray;
+} */
+
+.user-grid, .computer-grid {
+    counter-set: first_row_square_counter 1;
+}
+
+.square:nth-child(-n+10) {
+    counter-increment: first_row_square_counter 1;
+}
+
+.square:nth-child(-n+10):before {
+    content: counter(first_row_square_counter, upper-alpha);
+    position: relative;
+    top: -20px;
+    left: 8px;
+    float: left;
+}
+
+.square:nth-child(10n+1) {
+    counter-increment: first_col_square_counter 1;
+}
+
+.square:nth-child(10n+1):after {
+    content: counter(first_col_square_counter);
+    position: relative;
+    top: 6px;
+    left: -20px;
+}
+
+.square:first-child:after {
+    left: -30px;
+}
+
+.ship-section{
+    background-color: pink;
+    display: flex;
+    min-height: 48px;
+    width: 100%;
+}
+
+.invisible{
+    visibility: hidden;
+    position: absolute;
+}
+
+.ship-section > .ship{
+    margin: 15px 0 0 15px;
+}
+
+.ship{
+    display: flex;
+    /* margin: 30px 0 0 30px; */
+    height: 30px;
+    width: max-content;
+    position: relative;
+    border: 1px solid dimgray;
+    
+}
+
+.user-ships-vertical{
+    display: flex;
+    flex-direction: row;
+}
+
+.ship-section-vertical{
+    width: 17%;
+    flex-direction: column; 
+    height: 190px;
+    max-height: 190px;
+    flex-wrap: wrap; 
+}
+
+.user-ships-vertical > .ship-section2,.user-ships-vertical >.ship-section3{
+    width: 34%;
+}
+
+.ship-vertical{
+    flex-direction: column;
+    height: max-content;
+}
+
+.ss,.ess{
+    height: 30px;
+    width: 30px;
+    background-color: silver;
+    border: 1px solid dimgray;
+}
+
+.square > .ship{
+    box-sizing: content-box;
+    margin: -2px;
+    position: absolute;
+}
+
+.button-section{
+    margin-top: 30px;
+    background-color:bisque;
+    height: 70%;
+    justify-content: space-evenly;
+}
+
+.button-section > button{
+    /* //line-height:  30px; */
+    vertical-align: text-top;
+    font-size: 22px;
+    color: whitesmoke;
+    text-align: center;
+    padding: 0px 20px 0px 20px;
+    height: 50px;
+    background-color: cornflowerblue;
+    border: 3px solid royalblue;
+    border-radius: 20px;
+}
+
+button:hover { 
+    background: royalblue;
+    /* //color: royalblue; */
+}
+
+
+.little{
+    transform-origin: center left;
+    transform: scale(0.5);
+    float: left;
+}
+
+.ship-active{
+    opacity: 0.5;
+}
+
+.ship-checker{
+    opacity: 0.6;
+}
+
+.ship-checker-dead > .ss,.ship-checker-dead > .ess{
+    background-color: rebeccapurple;
+}
+
+.dead{
+    background-color: red;
+}
+
+/* .taken{
+    background-color: rgb(19, 80, 19); 
+} */
+
+/* .takenByShip{background-color: orange;} */
+
+.takenByShip{
+    /* box-sizing: content-box;
+    margin: -1px;
+    width: calc(10% - 2px);
+    height: calc(10% - 2px);
+    border: 2px solid dimgray;
+    background-color: silver;
+    position: relative; */
+}
+
+.takenGOVision{
+    box-sizing: content-box;
+    margin: -1px;
+    width: calc(10% - 2px);
+    height: calc(10% - 2px);
+    border: 2px solid dimgray;
+    background-color: gold;
+    position: relative;
+    opacity: 0.8;
+}
+
+.MyTaken{
+    background-color: palegreen;  
+}
+
+.MyShips{
+    box-sizing: content-box;
+    margin: -1px;
+    width: calc(10% - 2px);
+    height: calc(10% - 2px);
+    border: 2px solid dimgray;
+    background-color: silver;
+    position: relative;
+}
+
+.unselectable {
+    user-drag: none; 
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.boom{
+    box-sizing: content-box;
+    margin: -1px;
+    width: calc(10% - 2px);
+    height: calc(10% - 2px);
+    border: 2px solid dimgray;
+    background-color: palevioletred;
+    position: relative;
+}
+.miss{
+    background-color: cornflowerblue;
+}
+
+.takenDead{
+    background-color:  royalblue;
+    /* background-color: dodgerblue; */
+}
+
+.dead{
+    box-sizing: content-box;
+    margin: -1px;
+    width: calc(10% - 2px);
+    height: calc(10% - 2px);
+    border: 2px solid dimgray;
+    background-color: purple;
+    position: relative;
+}
+
+button:disabled{
+    opacity: 0.6;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+}
+
+.restart{
+    height: max-content;
+}
+
+.connected span,
+.ready span
+{
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    background-color:red;
+}
+
+span.green
+{
+    background-color:green;
+}
+
+
+@media screen and (max-width : 1280px) {
+    .user-grid,.computer-grid{
+        margin-top: 20px;
+    }
+    .footer-sec > h2{
+        font-size: 18px;
+    }
+    .footer-sec > p{
+        font-size: 14px;
+    }
+}
+/* @media screen and (max-width : 1024px) {
+    
+} */
+@media screen and (max-width : 960px) {
+
+    .footer-sec > h2{
+        font-size: 17px;
+    }
+    .footer-sec > p{
+        font-size: 12px;
+    }
+
+    .footer-sec{
+        margin-inline: 5px;
+    }
+
+    .fields > .container {
+        margin-inline: 5vw;
+    }
+
+    .mover>h3{
+        margin-block-start: 0.8em;
+        margin-block-end: 0.8em;
+    }
+    .mover{
+        min-width: 250px;
+        margin-top: 10px;
+        padding-inline: 20px;
+        border: 5px dashed palevioletred;
+        border-radius: 20px;
+        font-size: 20px;
+    }
+    .fields{
+        flex-wrap: wrap;
+        height: max-content;
+    }
+    .buttons{
+        order: 3;
+        width: 98%;
+    }
+    .button-section{
+        margin-top: 15px;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        height: max-content;
+    }
+
+    .button-section > button{
+        font-size: 20px;
+        padding: 0px 20px 0px 20px;
+        height: 50px;
+        border-radius: 20px;
+    }
+}
+@media screen and (max-width : 768px) {
+    header{
+        display: flex;
+        justify-content: center;
+    }
+    .fields > .container{
+        margin: 10px auto 10px auto;
+    }
+    .fields{
+        flex-direction: column;
+        justify-content: center;
+    }
+    .button-section{
+        margin: 15px 0 15px 0;
+        flex-direction: column;
+    }
+    .button-section > button{
+        margin: 5px auto 5px auto;
+        width: 250px;
+        justify-self:center;
+    }
+
+    footer{
+        flex-direction: column;
+        height: max-content;
+    }
+
+    header>h1{   
+        margin-left: 0px;
+        margin-block-start: 0.5em;
+        margin-block-end: 0.5em;
+    }
+
+    .footer-sec > h2{
+        font-size: 18px;
+    }
+    .footer-sec > p{
+        font-size: 14px;
+    }
+}
+@media screen and (max-width : 480px) {
+    
+}
+@media screen and (max-width : 320px) {
+    
+}
