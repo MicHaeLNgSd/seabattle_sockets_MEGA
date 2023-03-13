@@ -49,7 +49,7 @@ footer{
     min-width: 21%;
 }
 
-.user-grid,.computer-grid{
+.user-grid,.enemy-grid{
     border: 1px solid lightcyan;
 }
 
@@ -90,13 +90,13 @@ section{
     margin: 30px;
 }
 
-.user-grid,.computer-grid{
+.user-grid,.enemy-grid{
     background-color: plum;
     height: 300px;
     width: 300px;
     position: relative;
 }
-.user-ships,.computer-ships{
+.user-ships,.enemy-ships{
     background-color: plum;
     height: max-content;
     max-height: 300px;
@@ -114,7 +114,7 @@ section{
     background-color: gray;
 } */
 
-.user-grid, .computer-grid {
+.user-grid, .enemy-grid {
     counter-set: first_row_square_counter 1;
 }
 
@@ -361,7 +361,7 @@ span.green
 
 
 @media screen and (max-width : 1280px) {
-    .user-grid,.computer-grid{
+    .user-grid,.enemy-grid{
         margin-top: 20px;
     }
     .footer-sec > h2{
