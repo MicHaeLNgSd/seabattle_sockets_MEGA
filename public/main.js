@@ -43,8 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
 })
 
 //startG.addEventListener("click", playGameBtn);
-randForMe.addEventListener("click", () => createShips(userSquares));
-cleanMe.addEventListener("click", () => cleanBoard(userSquares));
+//randForMe.addEventListener("click", () => createShips(userSquares));
+//cleanMe.addEventListener("click", () => cleanBoard(userSquares));
 restartBtn.addEventListener("click", restart);
 
 //TODO Create Board
@@ -63,69 +63,55 @@ function createBoard(grid, squares) {
 createBoard(userGrid, userSquares)
 createBoard(enemyGrid, enemySquares)
 
+//TODO GenerateReady     //generate(userSquares, "ship10"); //server +-orig
+// function generate(GridSquares, shipId) {
+//     let randomDirection = Math.round(Math.random());
+//     let shipById = document.querySelector(`[id="${shipId}"]`);
+//     let randomStart = Math.abs(Math.floor(Math.random() * GridSquares.length));
+//     let shipStartY
+//     let shipEndY
+//     let step
 
+//     if (randomDirection === 0) {
+//         step = 1
+//         shipStartY = Math.floor(randomStart / 10)
+//         shipEndY = Math.floor((randomStart + shipById.childElementCount - 1) / 10)
 
+//         for (let i = randomStart; i < (randomStart + shipById.childElementCount); i++) {
+//             if (GridSquares[i].classList.contains("taken") || shipStartY != shipEndY || randomStart + shipById.childElementCount > GridSquares.length - 1) {
+//                 generate(GridSquares, shipId)
+//                 return
+//             }
+//         }
+//     }
+//     if (randomDirection === 1) {
+//         step = 10
 
-
-
-
-
-
-
-
-
-
-
-
-//TODO Generate     //generate(userSquares, "ship10"); //server +-orig
-function generate(GridSquares, shipId) {
-    let randomDirection = Math.round(Math.random());
-    let shipById = document.querySelector(`[id="${shipId}"]`);
-    let randomStart = Math.abs(Math.floor(Math.random() * GridSquares.length));
-    let shipStartY
-    let shipEndY
-    let step
-
-    if (randomDirection === 0) {
-        step = 1
-        shipStartY = Math.floor(randomStart / 10)
-        shipEndY = Math.floor((randomStart + shipById.childElementCount - 1) / 10)
-
-        for (let i = randomStart; i < (randomStart + shipById.childElementCount); i++) {
-            if (GridSquares[i].classList.contains("taken") || shipStartY != shipEndY || randomStart + shipById.childElementCount > GridSquares.length - 1) {
-                generate(GridSquares, shipId)
-                return
-            }
-        }
-    }
-    if (randomDirection === 1) {
-        step = 10
-
-        for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
-            if (GridSquares[i].classList.contains("taken") || randomStart + shipById.childElementCount * step - 10 > GridSquares.length - 1) {
-                generate(GridSquares, shipId)
-                return
-            }
-        }
-    }
-    for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
-        GridSquares[i].classList.add('takenByShip');
-        GridSquares[i].classList.add(`${shipId}`);
-    }
-    for (let i = 0; i < 100; i++) {
-        for (let k = -1; k <= 1; k++) {
-            for (let g = -1; g <= 1; g++) {
-                if (i + k * 10 + g >= 0 && i + k * 10 + g < 100) {
-                    if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
-                        if (GridSquares[i + k * 10 + g].classList.contains('takenByShip')) {
-                            GridSquares[i].classList.add('taken');
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+//         for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
+//             if (GridSquares[i].classList.contains("taken") || randomStart + shipById.childElementCount * step - 10 > GridSquares.length - 1) {
+//                 generate(GridSquares, shipId)
+//                 return
+//             }
+//         }
+//     }
+//     for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
+//         GridSquares[i].classList.add('takenByShip');
+//         GridSquares[i].classList.add(`${shipId}`);
+//     }
+//     for (let i = 0; i < 100; i++) {
+//         for (let k = -1; k <= 1; k++) {
+//             for (let g = -1; g <= 1; g++) {
+//                 if (i + k * 10 + g >= 0 && i + k * 10 + g < 100) {
+//                     if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
+//                         if (GridSquares[i + k * 10 + g].classList.contains('takenByShip')) {
+//                             GridSquares[i].classList.add('taken');
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 
 function showMyShips(squares) { //client
     squares.forEach(square => {
@@ -144,51 +130,54 @@ function shipSectionIdGenerator(numSq, numShip) { //client
     return `${((numSq) ? 'e' : '') + 'ship-section' + step}`
 }
 
-function createShips(squares) { //server
-    sqSelector = (squares !== userSquares);
-    cleanBoard(squares);
+// function createShips(squares) { //server
+//     sqSelector = (squares !== userSquares);
+//     cleanBoard(squares);
 
-    for (let i = 1; i <= countShips; i++) {
-        generate(squares, shipIdGenerator(sqSelector, i))
-    }
-    if (!sqSelector) {
-        showMyShips(squares)
-        startG.disabled = false
-        turnDisplay.innerHTML = 'Натисніть Старт';
-        //turnDisplay.innerHTML = 'Press Start';
-    }
+//     for (let i = 0; i < countShips; i++) {
+//         let ships = { 0: 4, 1: 3, 2: 3, 3: 2, 4: 2, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1 }[i]
+//         socket.emit('generate', i, ships[i])
+//         redrawBoard()
+//     }
+//     if (!sqSelector) {
+//         showMyShips(squares)
+//         startG.disabled = false
+//         turnDisplay.innerHTML = 'Натисніть Старт';
+//         //turnDisplay.innerHTML = 'Press Start';
+//     }
+//     shipChecker(squares);
+//     rotateBtn.disabled = true
+// }
 
-    shipChecker(squares);
-    rotateBtn.disabled = true
-}
-
-
-//TODO Clean
 function cleanBoard(squares) { //server +- orig
     sqSelector = (squares !== userSquares); //because it can be press after another createShips pressed
+
+    //if (gamemode == 'singlePlayer') {
     squares.forEach(square => {
         square.className = ""
-        square.classList.add('square')
+        //square.classList.add('square')
     })
-    removeShipChecker(squares);
+    //}
 
-    if (!sqSelector) {
+    removeShipChecker(squares);
+    if (!sqSelector || gamemode == 'multiPlayer') {
         cleanBoardFromObj()
         turnDisplay.innerHTML = 'Розставте кораблі';
         removeDragDrop()
     }
+
     cleanMe.disabled = true
     rotateBtn.disabled = true
     startG.disabled = true
     //turnDisplay.innerHTML = 'Place Ships';
 }
 
-function cleanBoardFromObj() { //sc
+function cleanBoardFromObj() { //client
     let section
     for (let i = 1; i <= countShips; i++) {
         shipById = document.querySelector(`[id="${shipIdGenerator(0, i)}"]`)
         section = document.querySelector(`.${shipSectionIdGenerator(0, i)}`)
-        console.log('section', section);
+        //console.log('section', section);
         section.append(shipById)
     }
     myShips.forEach(ship => {
@@ -220,7 +209,7 @@ function removeShipChecker(squares) { //client
     }
 }
 
-function checkerDead(GridSquares) { //server
+function checkerDead(GridSquares) { //TODO SERVER checkerDead
     sqSelector = (GridSquares !== userSquares);
     for (let i = 1; i <= countShips; i++) {
         let JSchecker = true;
@@ -259,7 +248,7 @@ function checkerDead(GridSquares) { //server
     return
 }
 
-function isShipsOnField(GridSquares) {//server
+function isShipsOnField(GridSquares) {//TODO SERVER isShipsOnField
     for (let i = 0; i < GridSquares.length; i++) {
         if (GridSquares[i].classList.contains("takenByShip")) {
             return true;
@@ -270,8 +259,7 @@ function isShipsOnField(GridSquares) {//server
 
 
 //TODO Game Start Logic
-function playGameBtn() { //TODO playGameBtn
-
+function playGameBtn(socket) { //TODO playGameBtn
     if (gamemode == "singlePlayer") {
         isMyTurn = true;
         createShips(enemySquares) //server
@@ -298,7 +286,7 @@ function playGameBtn() { //TODO playGameBtn
     shipChecker(userSquares) //client
 
     enemySquares.forEach(square => square.addEventListener('click', function (e) {
-        playerGo(square);
+        playerGo(square, socket);
     }))
 }
 
@@ -315,7 +303,7 @@ function playGame() {
     //turnDisplay.innerHTML = (isMyTurn)?'Your Move':'Enemy`s Move';
 }
 
-function playerGo(square) {
+function playerGo(square, socket) {
     if (isGameOver ||
         !isMyTurn ||
         square.classList.contains('boom') ||
@@ -323,16 +311,26 @@ function playerGo(square) {
         return
     } //client
 
-    if (square.classList.contains('takenByShip')) { //server
-        square.classList.add('boom') //server
-        checkerDead(enemySquares) //server
-        checkGameOver() //server
-        return
+    if (gamemode == 'singlePlayer') {
+        if (square.classList.contains('takenByShip')) { //server
+            square.classList.add('boom') //server
+            checkerDead(enemySquares) //server
+            checkGameOver() //server
+            return
+        } else {
+            square.classList.add('miss') //server
+        }
+        isMyTurn = !isMyTurn//isMyTurn = false;
     } else {
-        square.classList.add('miss') //server
+        sqId = square.dataset.y + square.dataset.x;
+        console.log(square.dataset.y, ' ', square.dataset.x, ' ', sqId);
+        socket.emit('fire', sqId);
+        socket.on('fireAnswer', (sqId, sqStatus) => { //TODO bug: mess are getting more and more often (i++ like when u NASLAIVAT them)
+            console.log(sqId, sqStatus);
+            boardArrToHTMLbySqStatus2(enemySquares, sqId, sqStatus)
+        });
+        // socket.emit('nextTurn', isMyTurn);
     }
-
-    isMyTurn = !isMyTurn//isMyTurn = false;
     playGame();
 }
 
@@ -676,6 +674,17 @@ function startSingleGame() {
     //settings("COMPUTER")
     gamemode = 'singlePlayer'
     startG.addEventListener("click", playGameBtn);
+    randForMe.addEventListener("click", () => createShips(userSquares));
+    cleanMe.addEventListener("click", () => cleanBoard(userSquares));
+}
+
+function boardArrToHTMLbySqStatus2(GridSquares, SqIndex, SqStatus) { //client
+    let SqStatusName = { 0: 'square', 1: 'taken', 2: 'takenByShip', 3: 'miss', 4: 'boom', 5: 'dead' }[SqStatus.toString()[0]];
+    SqIndex = (SqIndex.toString()[0] == 0) ? SqIndex % 10 : SqIndex
+    GridSquares[SqIndex].classList.add(SqStatusName)
+    if (SqStatus.toString()[0] == 2) {
+        GridSquares[SqIndex].classList.add(`ship${SqStatus.toString()[1]}`)
+    }
 }
 
 function startMultiPlayer() {
@@ -684,12 +693,43 @@ function startMultiPlayer() {
     startG.addEventListener("click", () => {
         playerReady(playerNum)
         socket.emit('player-ready', playerNum)
-
-        socket.on('start-game', (isP2Turn) => {
-            isMyTurn = (isP2Turn == playerNum - 1)
-            playMultiPlayerGame()
+        // socket.on('start-game', (isplayerTurn) => {
+        //     isMyTurn = isplayerTurn
+        //     playMultiPlayerGame(socket)
+        // })
+        socket.on('start-game', () => {
+            playMultiPlayerGame(socket)
         })
     });
+    randForMe.addEventListener("click", () => {
+        cleanBoard(userSquares)
+        socket.emit('clean')
+
+        //redrawBoard()
+
+        for (let i = 0; i < countShips; i++) {
+            let shipIdToLength = { 0: 4, 1: 3, 2: 3, 3: 2, 4: 2, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1 }[i]
+            //console.log(i, shipIdToLength);
+            socket.emit('generate', i, shipIdToLength)
+        }
+        //redrawBoard()
+        showMyShips(userSquares)
+        startG.disabled = false
+        turnDisplay.innerHTML = 'Натисніть Старт';
+
+        shipChecker(userSquares);
+        rotateBtn.disabled = true
+
+        cleanMe.disabled = false
+    })
+    cleanMe.addEventListener("click", () => {
+        console.log('clean');
+        cleanBoard(userSquares)
+        socket.emit('clean')
+
+        //redrawBoard()
+
+    })
 
     const socket = io();
 
@@ -697,7 +737,8 @@ function startMultiPlayer() {
     let playerNum
     let enemyNum
 
-    socket.on('player-start', (plNum) => {
+    socket.on('player-start', (plNum, isPlayerTurn) => {
+        isMyTurn = isPlayerTurn
         console.log('player-start');
         playerNum = plNum
         enemyNum = (plNum == 1) ? 2 : 1
@@ -707,7 +748,6 @@ function startMultiPlayer() {
     })
 
     socket.on('check-player-answer', (OponentInfo, MyStatus) => {
-        //console.log('check-player-answer');
         user1name.innerHTML = (currentUserName == "") ? "YOU" : currentUserName //TODO can be rewrited to get name from seerver not from itself
 
         if (MyStatus.conn) {
@@ -741,54 +781,26 @@ function startMultiPlayer() {
         playerReady(plN)
     })
 
-    function playMultiPlayerGame() {
+    function playMultiPlayerGame(socket) {
         console.log("START playMultiPlayerGame");
-        playGameBtn();
+        playGameBtn(socket);
+        playGame()
     }
 
     function playerReady(playerNumber) {
         document.querySelector(`.p${playerNumber} .ready span`).classList.toggle('green')
     }
 
-
-
-    // let boardTestJSON = []
-
-    // function createrJSON(board) {
-    //     for (let i = 0; i < 100; i++) {
-    //         board.push("")
-    //     }
-    // }
-
-    // createrJSON(boardTestJSON)
-
-
-
-
-    function boardArrToHTMLbySqID2(SqID, SqIndex) { //client
-        let SqIDName = { 0: 'square', 1: 'taken', 2: 'takenByShip', 3: 'miss', 4: 'boom', 5: 'dead' }[SqID];
-        userSquares[SqIndex].classList.add(SqIDName)
-    }
-
-
-    // function boardArrToHTMLbySqID(SqID, SqIndex) { //client
-    //     userSquares[SqIndex].classList.add(SqID)
-    // }
-
-
     socket.on('boardTest', boardTest => {
-        console.log("boardTest", boardTest);
-        //userGrid.innerHTML = '';
-        cleanBoard(userSquares)
-
         boardTest.forEach((el, index) => {
-            boardArrToHTMLbySqID2(el, index)
+            boardArrToHTMLbySqStatus2(userSquares, index, el)
         })
-        boardArrToHTMLbySqID2(5, 5)
+        showMyShips(userSquares)
+    })
 
-        // boardTest.forEach((el, index) => {
-        //     boardArrToHTMLbySqID(el, index)
-        // })
-        // boardArrToHTMLbySqID("dead", 5)
+    socket.on('nextTurn', () => {
+        isMyTurn = !isMyTurn
+        //console.log(isPlayerTurn, isMyTurn);
+        playGame()
     })
 }
