@@ -71,7 +71,8 @@ io.on('connection', (socket) => {
         if (userInfo[indexOfFreeConnection + tempIndOponent] && userInfo[indexOfFreeConnection + tempIndOponent].statusInfo.ready === true) {//TODO bug no another unit => statusInfo = undefined
             userInfo[indexOfFreeConnection].statusInfo
 
-            console.log(userInfo[indexOfFreeConnection].isPlayerTurn);
+            console.log("myTurn", userInfo[indexOfFreeConnection].isPlayerTurn);
+            console.log("enTurn", userInfo[indexOfFreeConnection + tempIndOponent].isPlayerTurn);
             //turnArr[indexOfFreeConnection] = false
             //io.in(roomName).emit('nextTurn');
             //io.in(roomName).emit('start-game', userInfo[indexOfFreeConnection].isPlayerTurn);
@@ -93,9 +94,9 @@ io.on('connection', (socket) => {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ]
     let boardTest = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+        1, 20, 20, 20, 20, 1, 0, 0, 0, 0,
+        1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -104,20 +105,20 @@ io.on('connection', (socket) => {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ]
-    // let boardTestFull = [
-    //     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    //     0, 3, 0, 0, 0, 0, 0, 0, 0, 0,
-    //     0, 3, 3, 4, 4, 2, 0, 0, 0, 0,
-    //     0, 3, 0, 0, 0, 0, 1, 1, 1, 0,
-    //     0, 0, 0, 0, 0, 0, 1, 5, 1, 0,
-    //     0, 0, 0, 0, 0, 0, 1, 5, 1, 0,
-    //     0, 0, 0, 0, 0, 0, 1, 5, 1, 0,
-    //     0, 0, 0, 0, 0, 0, 1, 1, 1, 0,
-    //     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    //     0, 0, 0, 0, 0, 0, 0, 0, 0, 5
-    // ]
+    let boardTestFull = [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 3, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 3, 3, 4, 4, 2, 0, 0, 0, 0,
+        0, 3, 0, 0, 0, 0, 1, 1, 1, 0,
+        0, 0, 0, 0, 0, 0, 1, 5, 1, 0,
+        0, 0, 0, 0, 0, 0, 1, 5, 1, 0,
+        0, 0, 0, 0, 0, 0, 1, 5, 1, 0,
+        0, 0, 0, 0, 0, 0, 1, 1, 1, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 5
+    ]
 
-    userInfo[indexOfFreeConnection].board = boardTestZero
+    userInfo[indexOfFreeConnection].board = boardTest //boardTestZero//TODO TESTS ONLY
 
     socket.on('generate', (shipId, length) => {
         generate_server(userInfo[indexOfFreeConnection].board, shipId, length)
@@ -130,25 +131,79 @@ io.on('connection', (socket) => {
     })
 
     socket.on('fire', (sqId) => {
-        //console.log(sqId, userInfo[indexOfFreeConnection + tempIndOponent].board);
-        if (userInfo[indexOfFreeConnection + tempIndOponent].board[sqId] > 9 && userInfo[indexOfFreeConnection + tempIndOponent].board[sqId].toString()[0] == 2) {
-            // if (isShipDead_server()) {
-            //     checkShipDead_server(socket.emit('fireAnswer', sqId, 5))
-            // } else {
-            socket.emit('fireAnswer', sqId, 4)
-            //}
-        } else {
-            //socket.emit
-            socket.emit('fireAnswer', sqId, 3);
-            userInfo[indexOfFreeConnection].isPlayerTurn = !userInfo[indexOfFreeConnection].isPlayerTurn
+        // if (userInfo[indexOfFreeConnection].isPlayerTurn == false) {
+        //     return //TODO NOT WORKING SECOND PLAYERS IN BOTH GAMES
+        // }
+        //sqId = Number(sqId) //01-09 not working
+        enemyBoard = userInfo[indexOfFreeConnection + tempIndOponent].board
+        sqShipId = enemyBoard[sqId] % 10
+        if (enemyBoard[sqId] >= 20 && enemyBoard[sqId].toString()[0] == 2) {
+            console.log("dead", isShipDead_server(enemyBoard, sqShipId), enemyBoard[sqId]);
+            if (isShipDead_server(enemyBoard, sqShipId)) {
+                console.log('ShipDead');
+                socket.emit('shipCheackerByIdDead', sqShipId)
+                for (let i = 0; i < enemyBoard.length; i++) {
+                    if ((enemyBoard[i].toString()[0] == 4 || enemyBoard[i].toString()[0] == 2) && enemyBoard[i].toString()[1] == sqShipId) {
+                        enemyBoard[i] = 50 + enemyBoard[i] % 10
+                        io.in(roomName).emit('fireAnswer', i, 50 + enemyBoard[i] % 10);
+                        //socket.emit('fireAnswer', i, 50 + enemyBoard[i] % 10)
+                    }
+                }
 
-            //turnArr[indexOfFreeConnection] = !turnArr[indexOfFreeConnection]
-            //console.log(userInfo[indexOfFreeConnection].isPlayerTurn);
+                //io.in(roomName).emit('createMissAroundDeadSquares', enemyBoard);
+                for (let i = 0; i < 100; i++) {
+                    aroundPainter(i)
+                }
+
+                function aroundPainter(i) {
+                    for (let k = -10; k <= 10; k += 10) {
+                        for (let g = -1; g <= 1; g++) {
+                            if (i + k + g >= 0 && i + k + g < 100) {
+                                if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
+                                    if (enemyBoard[i + k + g].toString()[0] == 5 && enemyBoard[i].toString()[0] != 5) {
+                                        enemyBoard[i] = 30;
+                                        io.in(roomName).emit('fireAnswer', i, 30);
+                                        return
+                                        //socket.emit('fireAnswer', i, 30)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (isGameOver(enemyBoard)) {
+                    console.log('GameOver');
+                    userInfo[indexOfFreeConnection + tempIndOponent].board[sqId] = enemyBoard[sqId]
+                    io.in(roomName).emit('gameOver');
+                    socket.to(roomName).emit('showAliveShips', userInfo[indexOfFreeConnection].board);
+                    return
+                }
+
+            }
+            else {
+                console.log('4');
+                enemyBoard[sqId] = 40 + enemyBoard[sqId] % 10
+                io.in(roomName).emit('fireAnswer', sqId, 40 + enemyBoard[sqId] % 10);
+                //socket.emit('fireAnswer', sqId, 40 + enemyBoard[sqId] % 10)
+            }
+        }
+        else {
+            console.log('3');
+            console.log("fA", sqId);
+
+            //socket.to(roomName).emit('fireAnswer', sqId, 30);
+            //io.in(roomName).emit('fireAnswer', 99, 30);
+
+            //userInfo[indexOfFreeConnection].isPlayerTurn = !userInfo[indexOfFreeConnection].isPlayerTurn
+            //userInfo[indexOfFreeConnection + tempIndOponent].isPlayerTurn = !userInfo[indexOfFreeConnection + tempIndOponent].isPlayerTurn
+            io.in(roomName).emit('fireAnswer', sqId, 30);
             io.in(roomName).emit('nextTurn');
         }
 
         //io.in('room').emit('nextTurn');
         //socket.emit('fireAnswer', sqId, 3);
+        userInfo[indexOfFreeConnection + tempIndOponent].board[sqId] = enemyBoard[sqId]
     })
 
 
@@ -164,11 +219,39 @@ io.on('connection', (socket) => {
     })
 
 
+    function isShipDead_server(GridSquares, sqShipIndNum) {
+        //console.log(GridSquares);
+        //console.log("sqShipIndNum", sqShipIndNum);
+        let alivePalubCounter = 0
+        for (let i = 0; i < GridSquares.length; i++) {
+            // if (1) {
+
+            //     console.log(GridSquares[i] % 10);
+            // }
+            // return false
+            if (GridSquares[i].toString()[1] == sqShipIndNum && GridSquares[i].toString()[0] == 2) {
+                //console.log(GridSquares[i]);
+                alivePalubCounter += 1
+            }
+        }
+        console.log("alivePalubCounter", alivePalubCounter);
+        if (alivePalubCounter <= 1) {
+            return true
+        } else {
+            return false
+        }
+    }
 
 
 
-
-
+    function isGameOver(GridSquares) {
+        for (let i = 0; i < GridSquares.length; i++) {
+            if (GridSquares[i].toString()[0] == 2) {
+                return false
+            }
+        }
+        return true
+    }
 
 
 
@@ -255,8 +338,23 @@ io.on('connection', (socket) => {
 
     //TODO Warnings:
     // All users MUST leave the room if one of them leaved !! (Because new connection will always create a "2" playerNum )
+    // https://socket.io/docs/v4/emit-cheatsheet/
+    // io.in('room').emit('event', data);
 
-    //io.in('room').emit('event', data);
+    // // basic emit back to sender
+    // socket.emit(/* ... */);
+    //
+    // // to all clients in the current namespace except the sender
+    // socket.broadcast.emit(/* ... */);
+    //
+    // // to all clients in room1 except the sender
+    // socket.to("room1").emit(/* ... */);
+    //
+    // // to all clients in room1 and/or room2 except the sender
+    // socket.to(["room1", "room2"]).emit(/* ... */);
+    //
+    // // to all clients in room1
+    // io.in("room1").emit(/* ... */);
 
 
     //====================================================

@@ -35,7 +35,7 @@ let boardArr = null;
 
 //TODO Buttons
 document.addEventListener("DOMContentLoaded", function () {
-    startG.disabled = true
+    startG.disabled = false//true //TODO TESTS ONLY
     //startG.setAttribute("disabled", "disabled")
     rotateBtn.disabled = true
     cleanMe.disabled = true
@@ -297,6 +297,7 @@ function playGame() {
     turnDisplay.innerHTML = (isMyTurn) ? 'Ваш Хід' : 'Хід Суперника';
 
     if (gamemode == "singlePlayer" && !isMyTurn) {
+        console.log('computerGo');
         setTimeout(computerGo, 500)
     }
 
@@ -322,12 +323,29 @@ function playerGo(square, socket) {
         }
         isMyTurn = !isMyTurn//isMyTurn = false;
     } else {
-        sqId = square.dataset.y + square.dataset.x;
+        sqId = Number(square.dataset.y + square.dataset.x);//01-09 not working
         console.log(square.dataset.y, ' ', square.dataset.x, ' ', sqId);
         socket.emit('fire', sqId);
         socket.on('fireAnswer', (sqId, sqStatus) => { //TODO bug: mess are getting more and more often (i++ like when u NASLAIVAT them)
+
+            console.log("isMyTurn(m=e, !m=u)", isMyTurn);
             console.log(sqId, sqStatus);
-            boardArrToHTMLbySqStatus2(enemySquares, sqId, sqStatus)
+
+            //let oneOfSquares
+            if (isMyTurn) {
+                //console.log("enemySquares", enemySquares[sqId]);
+                boardArrToHTMLbySqStatus2(enemySquares, sqId, sqStatus)
+                //oneOfSquares = enemySquares
+            } else {
+                //console.log("userSquares", userSquares[sqId]);
+                //oneOfSquares = userSquares
+                boardArrToHTMLbySqStatus2(userSquares, sqId, sqStatus)
+            }
+
+            //console.log("oneOfSquares", oneOfSquares);
+
+
+
         });
         // socket.emit('nextTurn', isMyTurn);
     }
@@ -660,6 +678,7 @@ const user2name = document.querySelector("#user2name");
 
 const singlePlayerBtn = document.querySelector("#singlePlayerBtn");
 const multiPlayerBtn = document.querySelector("#multiPlayerBtn");
+const adminBtn = document.querySelector("#adminBtn");
 
 singlePlayerBtn.addEventListener('click', startSingleGame)
 multiPlayerBtn.addEventListener('click', startMultiPlayer)
@@ -680,17 +699,49 @@ function startSingleGame() {
 
 function boardArrToHTMLbySqStatus2(GridSquares, SqIndex, SqStatus) { //client
     let SqStatusName = { 0: 'square', 1: 'taken', 2: 'takenByShip', 3: 'miss', 4: 'boom', 5: 'dead' }[SqStatus.toString()[0]];
-    SqIndex = (SqIndex.toString()[0] == 0) ? SqIndex % 10 : SqIndex
+    SqIndex = (SqIndex.toString()[0] == 0) ? SqIndex % 10 : SqIndex //TODO is it posible to get [0*]?
     GridSquares[SqIndex].classList.add(SqStatusName)
     if (SqStatus.toString()[0] == 2) {
         GridSquares[SqIndex].classList.add(`ship${SqStatus.toString()[1]}`)
     }
 }
 
+adminBtn.addEventListener('click', testadmin)
+
+function testadmin() {
+    startMultiPlayer();
+}
+
 function startMultiPlayer() {
     gamemode = 'multiPlayer'
 
+    adminBtn.removeEventListener('click', testadmin)
+    adminBtn.addEventListener('click', () => {
+
+        cleanBoard(userSquares)
+        socket.emit('clean')
+        for (let i = 0; i < countShips; i++) {
+            let shipIdToLength = { 0: 4, 1: 3, 2: 3, 3: 2, 4: 2, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1 }[i]
+            socket.emit('generate', i, shipIdToLength)
+        }
+        showMyShips(userSquares)
+        startG.disabled = false
+        turnDisplay.innerHTML = 'Натисніть Старт';
+        shipChecker(userSquares);
+        rotateBtn.disabled = true
+        cleanMe.disabled = false
+
+
+        playerReady(playerNum)
+        socket.emit('player-ready', playerNum)
+        socket.on('start-game', () => {
+            playMultiPlayerGame(socket)
+        })
+
+    })
+
     startG.addEventListener("click", () => {
+        //showMyShips(userSquares)//TODO TESTS ONLY
         playerReady(playerNum)
         socket.emit('player-ready', playerNum)
         // socket.on('start-game', (isplayerTurn) => {
@@ -726,9 +777,7 @@ function startMultiPlayer() {
         console.log('clean');
         cleanBoard(userSquares)
         socket.emit('clean')
-
         //redrawBoard()
-
     })
 
     const socket = io();
@@ -738,8 +787,8 @@ function startMultiPlayer() {
     let enemyNum
 
     socket.on('player-start', (plNum, isPlayerTurn) => {
-        isMyTurn = isPlayerTurn
-        console.log('player-start');
+        isMyTurn = Boolean(isPlayerTurn)
+        console.log('player-start', 'isMyTurn', isMyTurn);
         playerNum = plNum
         enemyNum = (plNum == 1) ? 2 : 1
         document.getElementById("title").innerHTML = `Pl${plNum}`
@@ -784,6 +833,7 @@ function startMultiPlayer() {
     function playMultiPlayerGame(socket) {
         console.log("START playMultiPlayerGame");
         playGameBtn(socket);
+        //showMyShips(enemySquares)//TODO MUST BE DELETED (ONLY FOR TESTS)
         playGame()
     }
 
@@ -803,4 +853,51 @@ function startMultiPlayer() {
         //console.log(isPlayerTurn, isMyTurn);
         playGame()
     })
+
+    // socket.on('shipCheackerByIdDead', shipId, () => {
+    //     console.log('shipCheackerByIdDead', shipId);
+
+    //     shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, shipId)}"]`)
+    //     shipById.classList.add('ship-checker-dead')
+    // })
+
+    socket.on('gameOver', () => {
+        console.log('gameOver');
+        if (isMyTurn) {
+            turnDisplay.innerHTML = 'Win';
+        } else {
+            turnDisplay.innerHTML = 'Lose';
+        }
+        isMyTurn = false
+    })
+
+    socket.on('showAliveShips', enemyAliveBoard, () => {
+        console.log('showAliveShips');
+
+        for (let i = 0; i < enemyAliveBoard.length; i++) {
+            if (enemyAliveBoard[i].toString()[0] == 2) {
+                enemySquares[i].classList.add('takenGOVision')
+            }
+        }
+    })
+
+    // socket.on('createMissAroundDeadSquares', GridBoard, () => {
+    //     console.log('createMissAroundDeadSquares');
+
+    //     for (let i = 0; i < 100; i++) {
+    //         for (let k = -10; k <= 10; k += 10) {
+    //             for (let g = -1; g <= 1; g++) {
+    //                 if (i + k + g >= 0 && i + k + g < 100) {
+    //                     if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
+    //                         if (GridBoard[i + k + g].toString()[0] == 5 && GridBoard[i].toString()[0] != 5) {
+    //                             GridBoard[i] = 30;
+    //                             io.in(roomName).emit('fireAnswer', i, 30);
+    //                             //socket.emit('fireAnswer', i, 30)
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // })
 }
