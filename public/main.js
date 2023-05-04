@@ -126,7 +126,7 @@ function shipIdGenerator(numSq, numShip) { //client
 }
 
 function shipSectionIdGenerator(numSq, numShip) { //client
-    let step = { 1: 1, 2: 2, 3: 2, 4: 3, 5: 3, 6: 3, 7: 4, 8: 4, 9: 4, 10: 4 }[numShip]; //ship:section
+    let step = { 0: 1, 1: 2, 2: 2, 3: 3, 4: 3, 5: 3, 6: 4, 7: 4, 8: 4, 9: 4 }[numShip]; //ship:section
     return `${((numSq) ? 'e' : '') + 'ship-section' + step}`
 }
 
@@ -174,7 +174,7 @@ function cleanBoard(squares) { //server +- orig
 
 function cleanBoardFromObj() { //client
     let section
-    for (let i = 1; i <= countShips; i++) {
+    for (let i = 0; i < countShips; i++) {
         shipById = document.querySelector(`[id="${shipIdGenerator(0, i)}"]`)
         section = document.querySelector(`.${shipSectionIdGenerator(0, i)}`)
         //console.log('section', section);
@@ -194,7 +194,7 @@ function cleanBoardFromObj() { //client
 //TODO Checkers
 function shipChecker(squares) { //client
     sqSelector = (squares !== userSquares);
-    for (let i = 1; i <= countShips; i++) {
+    for (let i = 0; i < countShips; i++) {
         shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
         shipById.classList.add('ship-checker')
     }
@@ -202,7 +202,7 @@ function shipChecker(squares) { //client
 
 function removeShipChecker(squares) { //client
     sqSelector = (squares !== userSquares);
-    for (let i = 1; i <= countShips; i++) {
+    for (let i = 0; i < countShips; i++) {
         shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
         shipById.classList.remove('ship-checker')
         shipById.classList.remove('ship-checker-dead')
@@ -211,7 +211,7 @@ function removeShipChecker(squares) { //client
 
 function checkerDead(GridSquares) { //TODO SERVER checkerDead
     sqSelector = (GridSquares !== userSquares);
-    for (let i = 1; i <= countShips; i++) {
+    for (let i = 0; i < countShips; i++) {
         let JSchecker = true;
         GridSquares.forEach(sq => {
             if (sq.classList.contains(`${shipIdGenerator(sqSelector, i)}`)) {
@@ -264,6 +264,29 @@ function playGameBtn(socket) { //TODO playGameBtn
         isMyTurn = true;
         createShips(enemySquares) //server
     }
+    else {
+        socket.on('fireAnswer', (sqId, sqStatus) => { //TODO bug: mess are getting more and more often (i++ like when u NASLAIVAT them)
+
+            console.log("isMyTurn(m=e, !m=u)", isMyTurn);
+            console.log(sqId, sqStatus);
+
+            //let oneOfSquares
+            if (isMyTurn) {
+                //console.log("enemySquares", enemySquares[sqId]);
+                boardArrToHTMLbySqStatus2(enemySquares, sqId, sqStatus)
+                //oneOfSquares = enemySquares
+            } else {
+                //console.log("userSquares", userSquares[sqId]);
+                //oneOfSquares = userSquares
+                boardArrToHTMLbySqStatus2(userSquares, sqId, sqStatus)
+            }
+
+            //console.log("oneOfSquares", oneOfSquares);
+
+
+
+        });
+    }
 
     turnDisplay.innerHTML = (isMyTurn) ? 'Ваш Хід' : 'Хід Суперника';
     isGameOver = false
@@ -283,7 +306,9 @@ function playGameBtn(socket) { //TODO playGameBtn
 
     cleanBoardFromObj() //sc
     showMyShips(userSquares) //client
-    shipChecker(userSquares) //client
+    //shipChecker(userSquares) //client //TODO CanBeUnReim
+    //socket.to("Room0").emit('shipCheckerToEnemy'); //TODO for 1 game
+    //socket.emit('shipCheckerToEnemy');
 
     enemySquares.forEach(square => square.addEventListener('click', function (e) {
         playerGo(square, socket);
@@ -326,27 +351,6 @@ function playerGo(square, socket) {
         sqId = Number(square.dataset.y + square.dataset.x);//01-09 not working
         console.log(square.dataset.y, ' ', square.dataset.x, ' ', sqId);
         socket.emit('fire', sqId);
-        socket.on('fireAnswer', (sqId, sqStatus) => { //TODO bug: mess are getting more and more often (i++ like when u NASLAIVAT them)
-
-            console.log("isMyTurn(m=e, !m=u)", isMyTurn);
-            console.log(sqId, sqStatus);
-
-            //let oneOfSquares
-            if (isMyTurn) {
-                //console.log("enemySquares", enemySquares[sqId]);
-                boardArrToHTMLbySqStatus2(enemySquares, sqId, sqStatus)
-                //oneOfSquares = enemySquares
-            } else {
-                //console.log("userSquares", userSquares[sqId]);
-                //oneOfSquares = userSquares
-                boardArrToHTMLbySqStatus2(userSquares, sqId, sqStatus)
-            }
-
-            //console.log("oneOfSquares", oneOfSquares);
-
-
-
-        });
         // socket.emit('nextTurn', isMyTurn);
     }
     playGame();
@@ -811,12 +815,15 @@ function startMultiPlayer() {
                 document.querySelector(`.p${enemyNum} .connected span`).classList.add('green')
             }
             if (OponentInfo.statusInfo.ready) {
-                document.querySelector(`.p${enemyNum} .ready span`).classList.add('green')
+                playerReady(enemyNum)
+                //document.querySelector(`.p${enemyNum} .ready span`).classList.add('green')
+                //shipChecker(enemySquares)
             }
 
         }
 
     })
+
     socket.on('tell-another-player', (OponentInfo) => {
         console.log('tell-another-player', OponentInfo);
         settings((OponentInfo.name == "") ? "OPONENT" : OponentInfo.name)
@@ -826,8 +833,15 @@ function startMultiPlayer() {
         }
     })
 
+    // socket.on('shipCheckerToEnemyAnswer', () => {
+    //     console.log('shipCheckerToEnemyAnswer');
+    //     shipChecker(enemySquares)
+    // })
+
+
     socket.on('player-ready-answer', (plN) => {
         playerReady(plN)
+        //shipChecker(enemySquares)
     })
 
     function playMultiPlayerGame(socket) {
@@ -839,9 +853,15 @@ function startMultiPlayer() {
 
     function playerReady(playerNumber) {
         document.querySelector(`.p${playerNumber} .ready span`).classList.toggle('green')
+        console.log(playerNumber);
+        if (playerNumber == playerNum) {
+            shipChecker(userSquares)
+        } else {
+            shipChecker(enemySquares)
+        }
     }
 
-    socket.on('boardTest', boardTest => {
+    socket.on('boardTest', (boardTest) => {
         boardTest.forEach((el, index) => {
             boardArrToHTMLbySqStatus2(userSquares, index, el)
         })
@@ -854,12 +874,14 @@ function startMultiPlayer() {
         playGame()
     })
 
-    // socket.on('shipCheackerByIdDead', shipId, () => {
-    //     console.log('shipCheackerByIdDead', shipId);
-
-    //     shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, shipId)}"]`)
-    //     shipById.classList.add('ship-checker-dead')
-    // })
+    socket.on('shipCheackerByIdDead', (plNum, shipId) => {
+        console.log('shipCheackerByIdDead', shipId);
+        let sqSelector = (plNum == playerNum);
+        //let sqSelector = (squares != userSquares);
+        console.log("WTFISGOINGON(true = e): ", plNum, sqSelector, " ", shipIdGenerator(sqSelector, shipId));
+        let shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, shipId)}"]`)
+        shipById.classList.add('ship-checker-dead')
+    })
 
     socket.on('gameOver', () => {
         console.log('gameOver');
@@ -871,7 +893,7 @@ function startMultiPlayer() {
         isMyTurn = false
     })
 
-    socket.on('showAliveShips', enemyAliveBoard, () => {
+    socket.on('showAliveShips', (enemyAliveBoard) => {
         console.log('showAliveShips');
 
         for (let i = 0; i < enemyAliveBoard.length; i++) {
@@ -880,6 +902,7 @@ function startMultiPlayer() {
             }
         }
     })
+
 
     // socket.on('createMissAroundDeadSquares', GridBoard, () => {
     //     console.log('createMissAroundDeadSquares');

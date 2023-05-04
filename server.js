@@ -137,11 +137,12 @@ io.on('connection', (socket) => {
         //sqId = Number(sqId) //01-09 not working
         enemyBoard = userInfo[indexOfFreeConnection + tempIndOponent].board
         sqShipId = enemyBoard[sqId] % 10
+        console.log(sqShipId);
         if (enemyBoard[sqId] >= 20 && enemyBoard[sqId].toString()[0] == 2) {
-            console.log("dead", isShipDead_server(enemyBoard, sqShipId), enemyBoard[sqId]);
+            //console.log("dead", isShipDead_server(enemyBoard, sqShipId), enemyBoard[sqId]);
             if (isShipDead_server(enemyBoard, sqShipId)) {
-                console.log('ShipDead');
-                socket.emit('shipCheackerByIdDead', sqShipId)
+                console.log('ShipDead', sqShipId);
+                io.in(roomName).emit('shipCheackerByIdDead', playerNumber, sqShipId)
                 for (let i = 0; i < enemyBoard.length; i++) {
                     if ((enemyBoard[i].toString()[0] == 4 || enemyBoard[i].toString()[0] == 2) && enemyBoard[i].toString()[1] == sqShipId) {
                         enemyBoard[i] = 50 + enemyBoard[i] % 10
@@ -206,7 +207,9 @@ io.on('connection', (socket) => {
         userInfo[indexOfFreeConnection + tempIndOponent].board[sqId] = enemyBoard[sqId]
     })
 
-
+    // socket.on('shipCheckerToEnemy', () => {
+    //     socket.to(roomName).emit('shipCheckerToEnemyAnswer');
+    // })
 
     socket.on('disconnect', () => {
         socket.leave(roomName);
