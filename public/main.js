@@ -39,13 +39,13 @@ document.addEventListener("DOMContentLoaded", function () {
     //startG.setAttribute("disabled", "disabled")
     rotateBtn.disabled = true
     cleanMe.disabled = true
-    restartBtn.classList.add("invisible")
+    //restartBtn.classList.add("invisible")
 })
 
 //startG.addEventListener("click", playGameBtn);
 //randForMe.addEventListener("click", () => createShips(userSquares));
 //cleanMe.addEventListener("click", () => cleanBoard(userSquares));
-restartBtn.addEventListener("click", restart);
+//restartBtn.addEventListener("click", restart);
 
 //TODO Create Board
 function createBoard(grid, squares) {
@@ -63,55 +63,55 @@ function createBoard(grid, squares) {
 createBoard(userGrid, userSquares)
 createBoard(enemyGrid, enemySquares)
 
-//TODO GenerateReady     //generate(userSquares, "ship10"); //server +-orig
-// function generate(GridSquares, shipId) {
-//     let randomDirection = Math.round(Math.random());
-//     let shipById = document.querySelector(`[id="${shipId}"]`);
-//     let randomStart = Math.abs(Math.floor(Math.random() * GridSquares.length));
-//     let shipStartY
-//     let shipEndY
-//     let step
+//TODO SINGLE GenerateReady     //generate(userSquares, "ship10"); //server +-orig
+function generate(GridSquares, shipId) {
+    let randomDirection = Math.round(Math.random());
+    let shipById = document.querySelector(`[id="${shipId}"]`);
+    let randomStart = Math.abs(Math.floor(Math.random() * GridSquares.length));
+    let shipStartY
+    let shipEndY
+    let step
 
-//     if (randomDirection === 0) {
-//         step = 1
-//         shipStartY = Math.floor(randomStart / 10)
-//         shipEndY = Math.floor((randomStart + shipById.childElementCount - 1) / 10)
+    if (randomDirection === 0) {
+        step = 1
+        shipStartY = Math.floor(randomStart / 10)
+        shipEndY = Math.floor((randomStart + shipById.childElementCount - 1) / 10)
 
-//         for (let i = randomStart; i < (randomStart + shipById.childElementCount); i++) {
-//             if (GridSquares[i].classList.contains("taken") || shipStartY != shipEndY || randomStart + shipById.childElementCount > GridSquares.length - 1) {
-//                 generate(GridSquares, shipId)
-//                 return
-//             }
-//         }
-//     }
-//     if (randomDirection === 1) {
-//         step = 10
+        for (let i = randomStart; i < (randomStart + shipById.childElementCount); i++) {
+            if (GridSquares[i].classList.contains("taken") || shipStartY != shipEndY || randomStart + shipById.childElementCount > GridSquares.length - 1) {
+                generate(GridSquares, shipId)
+                return
+            }
+        }
+    }
+    if (randomDirection === 1) {
+        step = 10
 
-//         for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
-//             if (GridSquares[i].classList.contains("taken") || randomStart + shipById.childElementCount * step - 10 > GridSquares.length - 1) {
-//                 generate(GridSquares, shipId)
-//                 return
-//             }
-//         }
-//     }
-//     for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
-//         GridSquares[i].classList.add('takenByShip');
-//         GridSquares[i].classList.add(`${shipId}`);
-//     }
-//     for (let i = 0; i < 100; i++) {
-//         for (let k = -1; k <= 1; k++) {
-//             for (let g = -1; g <= 1; g++) {
-//                 if (i + k * 10 + g >= 0 && i + k * 10 + g < 100) {
-//                     if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
-//                         if (GridSquares[i + k * 10 + g].classList.contains('takenByShip')) {
-//                             GridSquares[i].classList.add('taken');
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
+        for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
+            if (GridSquares[i].classList.contains("taken") || randomStart + shipById.childElementCount * step - 10 > GridSquares.length - 1) {
+                generate(GridSquares, shipId)
+                return
+            }
+        }
+    }
+    for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
+        GridSquares[i].classList.add('takenByShip');
+        GridSquares[i].classList.add(`${shipId}`);
+    }
+    for (let i = 0; i < 100; i++) {
+        for (let k = -1; k <= 1; k++) {
+            for (let g = -1; g <= 1; g++) {
+                if (i + k * 10 + g >= 0 && i + k * 10 + g < 100) {
+                    if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
+                        if (GridSquares[i + k * 10 + g].classList.contains('takenByShip')) {
+                            GridSquares[i].classList.add('taken');
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 function showMyShips(squares) { //client
     squares.forEach(square => {
@@ -155,7 +155,7 @@ function cleanBoard(squares) { //server +- orig
     //if (gamemode == 'singlePlayer') {
     squares.forEach(square => {
         square.className = ""
-        //square.classList.add('square')
+        square.classList.add('square')
     })
     //}
 
@@ -669,7 +669,7 @@ function restart() {
     randForMe.disabled = false
     dragDropBtn.disabled = false
 
-    restartBtn.classList.add("invisible")
+    //restartBtn.classList.add("invisible")
 }
 
 // generate(userSquares, "ship15");
@@ -696,9 +696,12 @@ function settings(enemyName = "ENEMY") {
 function startSingleGame() {
     //settings("COMPUTER")
     gamemode = 'singlePlayer'
+    console.log(gamemode);
+
     startG.addEventListener("click", playGameBtn);
     randForMe.addEventListener("click", () => createShips(userSquares));
     cleanMe.addEventListener("click", () => cleanBoard(userSquares));
+    restartBtn.addEventListener("click", restart);
 }
 
 function boardArrToHTMLbySqStatus2(GridSquares, SqIndex, SqStatus) { //client
@@ -745,7 +748,13 @@ function startMultiPlayer() {
     })
 
     startG.addEventListener("click", () => {
+
         //showMyShips(userSquares)//TODO TESTS ONLY
+        MyBoard = gridSquaresToArrOfNumbers(userSquares)
+        console.log(MyBoard);
+        socket.emit('DragDropByHand', MyBoard)
+
+
         playerReady(playerNum)
         socket.emit('player-ready', playerNum)
         // socket.on('start-game', (isplayerTurn) => {
@@ -754,8 +763,49 @@ function startMultiPlayer() {
         // })
         socket.on('start-game', () => {
             playMultiPlayerGame(socket)
+            return
         })
+        turnDisplay.innerHTML = 'Очікуємо суперника';
     });
+
+    function gridSquaresToArrOfNumbers(GridSquares) {
+        let arrOfNumbers = []
+        for (let i = 0; i < GridSquares.length; i++) {
+            if (GridSquares[i].classList.contains(`takenByShip`)) {
+                let shipNumber
+
+                function Element_getClassArgument(el, name) {
+                    var classes = el.className.split(' ');
+                    var prefix = name;
+                    for (var i = classes.length; i-- > 0;)
+                        if (classes[i].substring(0, prefix.length) == prefix)
+                            return classes[i].substring(prefix.length);
+                    return null;
+                }
+                shipNumber = Element_getClassArgument(GridSquares[i], 'ship');
+                //+ Number(shipNumber)
+                arrOfNumbers[i] = 20 + Number(shipNumber)
+            }
+            else if (GridSquares[i].classList.contains(`taken`)) {
+                arrOfNumbers[i] = 1
+            }
+            else if (GridSquares[i].classList.contains(`square`)) {
+                arrOfNumbers[i] = 0
+            }
+
+            // let SqStatusName = { 0: 'square', 1: 'taken', 2: 'takenByShip' }[SqStatus.toString()[0]];
+            // SqIndex = (SqIndex.toString()[0] == 0) ? SqIndex % 10 : SqIndex //TODO is it posible to get [0*]?
+            // GridSquares[SqIndex].classList.add(SqStatusName)
+            // if (SqStatus.toString()[0] == 2) {
+            //     GridSquares[SqIndex].classList.add(`ship${SqStatus.toString()[1]}`)
+            // }
+            //console.log(arrOfNumbers);
+
+        }
+
+        return arrOfNumbers
+    }
+
     randForMe.addEventListener("click", () => {
         cleanBoard(userSquares)
         socket.emit('clean')
@@ -783,6 +833,24 @@ function startMultiPlayer() {
         socket.emit('clean')
         //redrawBoard()
     })
+    restartBtn.addEventListener("click", () => {
+        console.log('restart');
+        //enemy
+        socket.emit('enemyDisconnect')
+        //location.reload()
+
+        //cleanBoard(userSquares)
+        //cleanBoard(enemySquares)
+
+        // randForMe.disabled = false
+        //dragDropBtn.disabled = false
+
+        //restartBtn.classList.add("invisible")
+        //socket.disconnect()
+        //socket.connection()
+        //socket.emit('disconnect')
+        //socket.emit('connection', socket)
+    });
 
     const socket = io();
 
@@ -801,10 +869,14 @@ function startMultiPlayer() {
     })
 
     socket.on('check-player-answer', (OponentInfo, MyStatus) => {
+        console.log("check-player-answer", OponentInfo, MyStatus);
         user1name.innerHTML = (currentUserName == "") ? "YOU" : currentUserName //TODO can be rewrited to get name from seerver not from itself
 
         if (MyStatus.conn) {
             document.querySelector(`.p${playerNum} .connected span`).classList.add('green')
+        }
+        else {
+            document.querySelector(`.p${playerNum} .connected span`).classList.remove('green')
         }
 
         // if (typeof OponentInfo != 'undefined') {console.log("OponentInfo  is not null", OponentInfo);}
@@ -814,11 +886,18 @@ function startMultiPlayer() {
                 settings((OponentInfo.name == "") ? "OPONENT" : OponentInfo.name)
                 document.querySelector(`.p${enemyNum} .connected span`).classList.add('green')
             }
+            else {
+                document.querySelector(`.p${enemyNum} .connected span`).classList.remove('green')
+            }
             if (OponentInfo.statusInfo.ready) {
+                //document.querySelector(`.p${enemyNum} .ready span`).classList.add('green')
                 playerReady(enemyNum)
                 //document.querySelector(`.p${enemyNum} .ready span`).classList.add('green')
                 //shipChecker(enemySquares)
             }
+            // else {
+            //     document.querySelector(`.p${enemyNum} .connected span`).classList.remove('green')
+            // }
 
         }
 

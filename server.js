@@ -210,6 +210,18 @@ io.on('connection', (socket) => {
     // socket.on('shipCheckerToEnemy', () => {
     //     socket.to(roomName).emit('shipCheckerToEnemyAnswer');
     // })
+    socket.on('DragDropByHand', (MyBoard) => {
+        console.log('DragDropByHand');
+
+        userInfo[indexOfFreeConnection].board = MyBoard
+    })
+
+    socket.on('enemyDisconnect', () => {
+        console.log('enemyDisconnect');
+        userInfo[indexOfFreeConnection].statusInfo = { conn: false, ready: false }
+        socket.to(roomName).emit('check-player-answer', userInfo[indexOfFreeConnection], userInfo[indexOfFreeConnection + tempIndOponent].statusInfo)
+        io.in(roomName).disconnectSockets(true);
+    })
 
     socket.on('disconnect', () => {
         socket.leave(roomName);
