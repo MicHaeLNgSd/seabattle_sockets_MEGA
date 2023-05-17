@@ -1,5 +1,6 @@
 *{
     box-sizing: border-box;
+    //border: 1px solid #f00; 
 }
 
 body{
@@ -80,6 +81,8 @@ section{
     border-radius: 20px;
     color:whitesmoke;
     font-size: 30px;
+
+    position: relative;
 }
 
 .container-g{
@@ -152,11 +155,6 @@ section{
     width: 100%;
 }
 
-.invisible{
-    visibility: hidden;
-    position: absolute;
-}
-
 .ship-section > .ship{
     margin: 15px 0 0 15px;
 }
@@ -226,12 +224,6 @@ section{
     border-radius: 20px;
 }
 
-button:hover { 
-    background: royalblue;
-    /* //color: royalblue; */
-}
-
-
 .little{
     transform-origin: center left;
     transform: scale(0.5);
@@ -254,9 +246,9 @@ button:hover {
     background-color: red;
 }
 
-.taken{
+/* .taken{
     background-color: rgb(19, 80, 19); 
-}
+} */
 
 /* .takenByShip{background-color: orange;} */
 
@@ -359,6 +351,143 @@ span.green
     background-color:green;
 }
 
+/* .firstWindow{
+    height: 100vh;
+} */
+
+.InfoSection{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    
+}
+.InfoSection>div{
+    margin-inline: 5vw;
+}
+
+ #firstWindow{
+    /* border: 3px solid royalblue;
+    border-radius: 20px; */
+    /* background-color:bisque; */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+
+    /* margin-top: 20px; */
+    /* min-width: 350px; */
+    width: 100%;
+    text-align: center;
+    margin-top: 0px;
+    padding-inline: 0px;
+    background-color:cornflowerblue;
+    /* border: 5px dashed palevioletred; */
+    /* border-radius: 20px; */
+    /* color:whitesmoke; */
+    font-size: 22px;
+}
+
+/* .firstWindow{
+    min-width: 350px;
+    text-align: center;
+    margin-top: 20px;
+    padding-inline: 20px;
+    background-color:bisque;
+    border: 5px dashed palevioletred;
+    border-radius: 20px;
+    color:whitesmoke;
+    font-size: 30px;
+}
+    */
+
+.firstButtons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;  
+}    
+
+#firstWindow > input,#firstWindow >.firstButtons> button{
+    width: 70%;
+    margin-bottom: 1px;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+#firstWindow >.firstButtons> button{
+    /* color:whitesmoke;
+    background-color: cornflowerblue;
+    border: 3px solid royalblue;
+   
+    height: 50px; */
+
+    width: 50%;
+    margin-bottom: 5px;
+    vertical-align: text-top;
+    font-size: 20px;
+    color: whitesmoke;
+    text-align: center;
+    padding: 0px 20px 0px 20px;
+    height: 50px;
+    background-color: cornflowerblue;
+    border: 3px solid royalblue;
+    border-radius: 20px;
+}
+
+button:hover { 
+    background: royalblue;
+    cursor: pointer;
+    /* //color: royalblue; */
+}
+
+/* .firstButtons>button:hover { 
+    background: royalblue;
+} */
+
+#userInfo,#enemyInfo{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;  
+    margin-top: -10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.statuses{
+    display: flex;
+    flex-direction: column;
+    justify-content: right;
+    text-align: right;
+    margin-top: -20px;
+}
+
+/* #userInfo,#enemyInfo{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  
+    text-align: center;
+    margin-top: -20px;
+    margin-bottom: 20px;
+    
+}
+
+.statuses{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly; 
+    margin-top: -20px;
+} */
+.invisible{
+    visibility: hidden;
+    position: absolute;
+}
+
+@media screen and (max-width : 1580px) {
+    #userInfo,#enemyInfo{
+        margin-top: 20px;
+        margin-bottom: -10px;
+    }
+}
 
 @media screen and (max-width : 1280px) {
     .user-grid,.enemy-grid{
@@ -370,6 +499,7 @@ span.green
     .footer-sec > p{
         font-size: 14px;
     }
+    
 }
 /* @media screen and (max-width : 1024px) {
     
@@ -463,6 +593,10 @@ span.green
     }
     .footer-sec > p{
         font-size: 14px;
+    }
+    #userInfo,#enemyInfo{
+        margin-top: 10px;
+        /* margin-bottom: 0px; */
     }
 }
 @media screen and (max-width : 480px) {

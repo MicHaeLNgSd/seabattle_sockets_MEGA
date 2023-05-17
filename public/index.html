@@ -13,10 +13,12 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <input type="text" id="currentUserName" placeholder="Enter your nickname">
-    <button id="singlePlayerBtn">Single Player</button>
-    <button id="multiPlayerBtn">Multiplayer</button>
-    <hr>
+    <!-- <div class="firstWindow">
+        <input type="text" id="currentUserName" placeholder="Enter your nickname">
+        <button id="singlePlayerBtn">Single Player</button>
+        <button id="multiPlayerBtn">Multiplayer</button>
+    </div> -->
+    <!-- <hr>
     <div class="player p1">
         Player 1
         <div class="connected">Connected <span></span></div>
@@ -28,21 +30,54 @@
         <div class="connected">Connected <span></span></div>
         <div class="ready">Ready <span></span></div>
     </div>
-    <hr>
+    <hr> -->
     <header>
         <h1>SeaBattle</h1>
     </header>
 
     <main>
-        <section>
+        <section class="InfoSection">
+            <!-- <div class="player p1">
+                Player 1
+                <div class="connected">Connected <span></span></div>
+                <div class="ready">Ready <span></span></div>
+            </div> -->
             <div class="container mover">
                 <!-- <h3 id="whose-go">Place Ships</h3> -->
                 <h3 id="whose-go">Розставте кораблі</h3>
+                <div id="firstWindow">
+                    <input type="text" id="currentUserName" placeholder="Enter your name">
+                    <div class="firstButtons ">
+                        <button type="button" id="singlePlayerBtn" name="run_script">Single Player</button>
+                        <button type="button" id="multiPlayerBtn" name="run_script">Multiplayer</button>
+                    </div>
+                </div> 
             </div>
+            <!-- <div class="container firstWindow invisible">
+                <div id="firstWindow">
+                    <input type="text" id="currentUserName" placeholder="Enter your nickname">
+                    <button id="singlePlayerBtn">Single Player</button>
+                    <button id="multiPlayerBtn">Multiplayer</button>
+                </div> 
+                <input type="text" id="currentUserName" placeholder="Enter your nickname">
+                <button id="singlePlayerBtn">Single Player</button>
+                <button id="multiPlayerBtn">Multiplayer</button>
+            </div> -->
+            <!-- <div class="player p2">
+                Player 2
+                <div class="connected">Connected <span></span></div>
+                <div class="ready">Ready <span></span></div>
+            </div> -->
         </section>
         <section class = "fields">
             <div class="container">
-                <div class="playerName" id="user1name">PLAYER1</div>
+                <div id="userInfo">
+                    <div class="playerName" id="user1name">PLAYER1</div>
+                    <div class="statuses">
+                        <div class="connected">Connected <span></span></div>
+                        <div class="ready">Ready <span></span></div>
+                    </div>
+                </div>
                 <div class="user-grid"></div>
                 <div class="user-ships">
                     <div class="ship-section ship-section1">
@@ -97,6 +132,11 @@
             </div>
 
             <div class="buttons">
+                <!-- <div class="firstWindow">
+                    <input type="text" id="currentUserName" placeholder="Enter your nickname">
+                    <button id="singlePlayerBtn">Single Player</button>
+                    <button id="multiPlayerBtn">Multiplayer</button>
+                </div> -->
                 <div class="container button-section">
                     <!-- <button id="playGame" type="button" name="run_script">Start</button>
                     <button id="randForMe" type="button" name="run_script">Random</button>
@@ -111,12 +151,18 @@
                     <button id="cleanMe" type="button" name="run_script">Очистити</button>
                     <button id="restart" type="button" name="run_script">З Початку</button>
 
-                    <button id="adminBtn" type="button" name="run_script">ADMIN_TEST</button>
+                    <!-- <button id="adminBtn" type="button" name="run_script">ADMIN_TEST</button> -->
                 </div>
             </div>
 
             <div class="container">
-                <div class="playerName" id="user2name">PLAYER2</div>
+                <div id="enemyInfo">
+                    <div class="playerName" id="user2name">PLAYER2</div>
+                    <div class="statuses">
+                        <div class="connected">Connected <span></span></div>
+                        <div class="ready">Ready <span></span></div>
+                    </div>
+                </div>
                 <div class="enemy-grid"></div>
                 <div class="enemy-ships">
                     <div class="ship-section eship-section1">
@@ -181,7 +227,7 @@
             <p>
                 Гра розроблена для некомерційного користування <br>
                 студентом групи РПЗ 19 1/9 <br>
-                ЗНТУ ЗЕФК "Запорізька політехніка"<br>
+                ВСП "ЗЕФК НУ "Запорізька політехніка"<br>
             </p>
         </div>
         <div class="footer-sec">
@@ -194,7 +240,7 @@
         <div class="footer-sec">
             <p>
                 Автор: ©KarMiGor <br>
-                Рік: 2022<br>
+                Рік: 2023<br>
             </p>   
         </div>
     </footer>
