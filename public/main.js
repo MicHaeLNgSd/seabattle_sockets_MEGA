@@ -1,9 +1,9 @@
 console.log("main.js is connected!)");
 
 //TODO MobileDragDrop
-// MobileDragDrop.polyfill({
-//     dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride
-// });
+MobileDragDrop.polyfill({
+    dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride
+});
 // window.addEventListener('touchmove', function () { }, { passive: false });
 
 const turnDisplay = document.querySelector('#whose-go')

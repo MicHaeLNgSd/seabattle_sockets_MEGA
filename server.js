@@ -6,11 +6,12 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-const path = require('path');
+//const path = require('path');
 const PORT = process.env.PORT || 3000;
 
 //TODO Set static folder
-app.use(express.static(path.join(__dirname, "public")));
+//app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.static(__dirname + '/public/'));
 // app.get('/', (req, res) => {
 //     res.sendFile(path.join(__dirname, 'public/main.js'))
 // })
