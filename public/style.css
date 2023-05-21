@@ -8,7 +8,7 @@ body{
 
 header,footer{
     display: flex;
-    height: 10%;
+    min-height: 10%;
     width: 100%;
     background-color:rgb(121, 160, 233);
     /* //background-color:rgb(135, 187, 235); */
@@ -411,6 +411,7 @@ span.green
     margin-bottom: 1px;
     border-radius: 10px;
     margin-top: 5px;
+    margin-inline: 5px;
 }
 
 #firstWindow >.firstButtons> button{
@@ -434,7 +435,8 @@ span.green
 }
 
 button:hover { 
-    background: royalblue;
+    border: 3px solid bisque !important;
+    background: royalblue!important;
     cursor: pointer;
     /* //color: royalblue; */
 }
@@ -599,8 +601,89 @@ button:hover {
     }
 }
 @media screen and (max-width : 480px) {
-    
+
 }
 @media screen and (max-width : 320px) {
+    /* .fields > .container{
+        max-width: calc(100% - 50px);
+    } 
+    .square{
+        width: calc((100vw - 50px) / 10);
+        height: calc((100vw - 50px) / 10);
+    }
+    .dead,.boom,.MyShips,.takenGOVision,.ss,.ess{
+        width: calc((100vw - 50px) / 10);
+        height: calc((100vw - 50px) / 10);
+    }
+    .ship{
+        height: calc((100vw - 50px -2px) / 10);
+    }
+    .ss,.ess{
+        width: calc((100vw - 50px - 2px) / 10);
+        height: calc((100vw - 50px  - 2px) / 10);
+    }
+    .user-grid,.enemy-grid{
+        height: calc(100vw - 50px + 2px);
+        width: calc(100vw - 50px + 2px);
+    }
+    .user-ships,.enemy-ships{
+        max-height: calc(100vw - 50px + 2px);
+        width: calc(100vw - 50px + 2px);
+    }
+
+    #firstWindow{
+        font-size: 18px;
+    }
     
+    #firstWindow >.firstButtons> button{
+        font-size: 15px;
+    }
+    
+    #userInfo,#enemyInfo{
+        font-size: 15px;
+    } */
+    
+
+    /* header{
+        display: flex;
+        justify-content: center;
+    }
+    .fields > .container{
+        margin: 10px auto 10px auto;
+    }
+    .fields{
+        flex-direction: column;
+        justify-content: center;
+    }
+    .button-section{
+        margin: 15px 0 15px 0;
+        flex-direction: column;
+    }
+    .button-section > button{
+        margin: 5px auto 5px auto;
+        width: 250px;
+        justify-self:center;
+    }
+
+    footer{
+        flex-direction: column;
+        height: max-content;
+    }
+
+    header>h1{   
+        margin-left: 0px;
+        margin-block-start: 0.5em;
+        margin-block-end: 0.5em;
+    }
+
+    .footer-sec > h2{
+        font-size: 18px;
+    }
+    .footer-sec > p{
+        font-size: 14px;
+    }
+    #userInfo,#enemyInfo{
+        margin-top: 10px;
+        /* margin-bottom: 0px; 
+    } */
 }

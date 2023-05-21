@@ -217,15 +217,22 @@ io.on('connection', (socket) => {
         userInfo[indexOfFreeConnection].board = MyBoard
     })
 
+    function enemyDisconnect() {
+        if (userInfo[indexOfFreeConnection + tempIndOponent].statusInfo.conn == true) {
+            console.log('enemyDisconnect');
+            userInfo[indexOfFreeConnection].statusInfo = { conn: false, ready: false }
+            socket.to(roomName).emit('check-player-answer', userInfo[indexOfFreeConnection], userInfo[indexOfFreeConnection + tempIndOponent].statusInfo)
+            io.in(roomName).disconnectSockets(true);
+        }
+    }
+
     socket.on('enemyDisconnect', () => {
-        console.log('enemyDisconnect');
-        userInfo[indexOfFreeConnection].statusInfo = { conn: false, ready: false }
-        socket.to(roomName).emit('check-player-answer', userInfo[indexOfFreeConnection], userInfo[indexOfFreeConnection + tempIndOponent].statusInfo)
-        io.in(roomName).disconnectSockets(true);
+        enemyDisconnect()
     })
 
     socket.on('disconnect', () => {
-        socket.leave(roomName);
+        //socket.leave(roomName);//TODO keep raim ONLY if enemyDisconnect() exist.
+        enemyDisconnect()
         console.log(`Player${indexOfFreeConnection} disconnected from Room${gamesArrWaitIndex}`);
         gamesArr[gamesArrWaitIndex] = false
         connections[indexOfFreeConnection] = undefined
