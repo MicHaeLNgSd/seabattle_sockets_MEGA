@@ -584,6 +584,9 @@ function dragDrop(e) {
                 return;
             }
         }
+
+        //socket.emit("DragDrop", currentSquare, takingSectionId, step, draggedShipLength)
+
         for (let i = currentSquare - takingSectionId * step; i < (currentSquare - (takingSectionId - draggedShipLength) * step); i += step) {
             if (userSquares[i].classList.contains("taken") || i > userSquares.length - 1) {
                 console.log("return")
@@ -606,7 +609,8 @@ function dragDrop(e) {
         let dsq = document.querySelector(`[data-y="${y}"][data-x="${x}"]`)
         dsq.append(ditem)
 
-        if (document.querySelectorAll('.user-ships > .ship-section > .ship').length == 0) {
+        if (document.querySelectorAll('.user-ships > .ship-section > .ship').length == 0 &&
+            document.querySelectorAll('.user-ships > .user-grid > .takenByShip').length == 20) {
             startG.disabled = false
             //turnDisplay.innerHTML = 'Press Start';
             turnDisplay.innerHTML = 'Натисніть Старт';
