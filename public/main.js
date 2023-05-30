@@ -1,5 +1,4 @@
 console.log("main.js is connected!)");
-
 //TODO MobileDragDrop
 MobileDragDrop.polyfill({
     dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride
@@ -69,71 +68,192 @@ function createBoard(grid, squares) {
 createBoard(userGrid, userSquares)
 createBoard(enemyGrid, enemySquares)
 
+
+
+
+
+//===========================================================//TODO SINGLE PLATER//=================================
+
 //TODO SINGLE GenerateReady     //generate(userSquares, "ship10"); //server +-orig
-// function generate(GridSquares, shipId) {
-//     let randomDirection = Math.round(Math.random());
-//     let shipById = document.querySelector(`[id="${shipId}"]`);
-//     let randomStart = Math.abs(Math.floor(Math.random() * GridSquares.length));
-//     let shipStartY
-//     let shipEndY
-//     let step
+function generate(GridSquares, shipId) {
+    let randomDirection = Math.round(Math.random());
+    let shipById = document.querySelector(`[id="${shipId}"]`);
+    let randomStart = Math.abs(Math.floor(Math.random() * GridSquares.length));
+    let shipStartY
+    let shipEndY
+    let step
 
-//     if (randomDirection === 0) {
-//         step = 1
-//         shipStartY = Math.floor(randomStart / 10)
-//         shipEndY = Math.floor((randomStart + shipById.childElementCount - 1) / 10)
+    if (randomDirection === 0) {
+        step = 1
+        shipStartY = Math.floor(randomStart / 10)
+        shipEndY = Math.floor((randomStart + shipById.childElementCount - 1) / 10)
 
-//         for (let i = randomStart; i < (randomStart + shipById.childElementCount); i++) {
-//             if (GridSquares[i].classList.contains("taken") || shipStartY != shipEndY || randomStart + shipById.childElementCount > GridSquares.length - 1) {
-//                 generate(GridSquares, shipId)
-//                 return
-//             }
-//         }
-//     }
-//     if (randomDirection === 1) {
-//         step = 10
-
-//         for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
-//             if (GridSquares[i].classList.contains("taken") || randomStart + shipById.childElementCount * step - 10 > GridSquares.length - 1) {
-//                 generate(GridSquares, shipId)
-//                 return
-//             }
-//         }
-//     }
-//     for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
-//         GridSquares[i].classList.add('takenByShip');
-//         GridSquares[i].classList.add(`${shipId}`);
-//     }
-//     for (let i = 0; i < 100; i++) {
-//         for (let k = -1; k <= 1; k++) {
-//             for (let g = -1; g <= 1; g++) {
-//                 if (i + k * 10 + g >= 0 && i + k * 10 + g < 100) {
-//                     if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
-//                         if (GridSquares[i + k * 10 + g].classList.contains('takenByShip')) {
-//                             GridSquares[i].classList.add('taken');
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
-
-function showMyShips(squares) { //client
-    squares.forEach(square => {
-        if (square.classList.contains("takenByShip")) {
-            square.classList.add("MyShips")
+        for (let i = randomStart; i < (randomStart + shipById.childElementCount); i++) {
+            if (GridSquares[i].classList.contains("taken") || shipStartY != shipEndY || randomStart + shipById.childElementCount > GridSquares.length - 1) {
+                generate(GridSquares, shipId)
+                return
+            }
         }
-    })
+    }
+    if (randomDirection === 1) {
+        step = 10
+
+        for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
+            if (GridSquares[i].classList.contains("taken") || randomStart + shipById.childElementCount * step - 10 > GridSquares.length - 1) {
+                generate(GridSquares, shipId)
+                return
+            }
+        }
+    }
+    for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
+        GridSquares[i].classList.add('takenByShip');
+        GridSquares[i].classList.add(`${shipId}`);
+    }
+    for (let i = 0; i < 100; i++) {
+        for (let k = -1; k <= 1; k++) {
+            for (let g = -1; g <= 1; g++) {
+                if (i + k * 10 + g >= 0 && i + k * 10 + g < 100) {
+                    if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
+                        if (GridSquares[i + k * 10 + g].classList.contains('takenByShip')) {
+                            GridSquares[i].classList.add('taken');
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 function shipIdGenerator(numSq, numShip) { //client
     return `${((numSq) ? 'enemyS' : 's') + 'hip' + numShip}`
 }
 
-function shipSectionIdGenerator(numSq, numShip) { //client
-    let step = { 0: 1, 1: 2, 2: 2, 3: 3, 4: 3, 5: 3, 6: 4, 7: 4, 8: 4, 9: 4 }[numShip]; //ship:section
-    return `${((numSq) ? 'e' : '') + 'ship-section' + step}`
+function createShips(squares) {
+    sqSelector = (squares !== userSquares);
+
+    cleanBoard(squares);
+
+    for (let i = 0; i < countShips; i++) {
+        generate(squares, shipIdGenerator(sqSelector, i))
+    }
+
+    if (!sqSelector) {
+        showMyShips(squares)
+        startG.disabled = false
+        turnDisplay.innerHTML = 'Натисніть Старт';
+        //turnDisplay.innerHTML = 'Press Start';
+    }
+
+    shipChecker(squares);
+    rotateBtn.disabled = true
+}
+
+function checkGameOver() { //server
+    let userDeadShipsScore = 0
+    let compDeadShipsScore = 0
+
+    userSquares.forEach(sq => {
+        if (sq.classList.contains('dead')) {
+            userDeadShipsScore += 1
+        }
+    })
+
+    enemySquares.forEach(sq => {
+        if (sq.classList.contains('dead')) {
+            compDeadShipsScore += 1
+        }
+    })
+
+    if (userDeadShipsScore === 20 || compDeadShipsScore === 20) {
+        //turnDisplay.innerHTML = userDeadShipsScore > compDeadShipsScore ? 'You Lose' : 'You Win';
+        turnDisplay.innerHTML = (userDeadShipsScore > compDeadShipsScore) ? 'Ви Програли' : 'Ви Перемогли';
+
+        isGameOver = true
+        //restartBtn.classList.remove("invisible")
+
+        let shipGOVision = document.querySelectorAll('.enemy-grid > .takenByShip')
+        shipGOVision.forEach(ship => {
+            if (!ship.classList.contains('boom')) {
+                ship.classList.add("takenGOVision");
+            }
+        });
+    }
+}
+
+function computerGo() { //sc orig
+    if (isGameOver) return
+    let coord = Math.floor(Math.random() * userSquares.length);
+    let boom1
+    let isAI = false
+    for (let i = 0; i < 100; i++) {
+        if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
+            boom1 = i
+            isAI = true
+            break
+        }
+    }
+    if (isAI) {
+        coord = computerAI(boom1)
+    }
+    if (userSquares[coord].classList.contains('boom') || userSquares[coord].classList.contains('miss')) {
+        return computerGo()
+    } else {
+        if (userSquares[coord].classList.contains('takenByShip')) {
+            userSquares[coord].classList.add('boom')
+            checkerDead(userSquares)
+            checkGameOver()
+            setTimeout(computerGo, 500)
+            return
+        } else {
+            userSquares[coord].classList.add('miss')
+        }
+    }
+    isMyTurn = true;
+    playGame()
+}
+
+//TODO ComputerAI
+function computerAI(boomFirst) { //OPTIMIZED //can add "biggest" logic //sc orig
+    let boomLast
+    let boom
+    let directionTemp
+    let rand
+    let step
+
+    for (let i = boomFirst + 1; i < 100; i++) {
+        if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
+            boomLast = i
+        }
+    }
+    if (boomLast === undefined) {
+        rand = Math.floor(Math.random() * 4);
+        step = { 0: -10, 1: 1, 2: 10, 3: -1 }[rand];
+        if (AILogicIsCanBePlaced(boomFirst, step)) {
+            return boomFirst + step;
+        }
+        else {
+            return computerAI(boomFirst);
+        }
+    }
+
+    directionTemp = (boomLast - boomFirst < 10) ? 1 : 10
+    rand = Math.floor(Math.random() * 2);
+    step = (rand) ? -1 * directionTemp : 1 * directionTemp;
+    boom = (step > 0) ? boomLast : boomFirst;
+
+    if (AILogicIsCanBePlaced(boom, step)) {
+        return boom + step;
+    }
+    else {
+        return computerAI(boomFirst);
+    }
+}
+
+function AILogicIsCanBePlaced(boom, step) {
+    return (boom + step >= 0 && boom + step < 100 &&
+        !((boom % 10 === 0 && (boom + step) % 10 === 9) ||
+            (boom % 10 === 9 && (boom + step) % 10 === 0)) &&
+        !userSquares[boom + step].classList.contains('miss'))  //make faster can be deleted
 }
 
 // function createShips(squares) { //server
@@ -154,6 +274,27 @@ function shipSectionIdGenerator(numSq, numShip) { //client
 //     shipChecker(squares);
 //     rotateBtn.disabled = true
 // }
+
+//==============================================================================================================
+
+
+
+
+
+
+
+function showMyShips(squares) { //client
+    squares.forEach(square => {
+        if (square.classList.contains("takenByShip")) {
+            square.classList.add("MyShips")
+        }
+    })
+}
+
+function shipSectionIdGenerator(numSq, numShip) { //client
+    let step = { 0: 1, 1: 2, 2: 2, 3: 3, 4: 3, 5: 3, 6: 4, 7: 4, 8: 4, 9: 4 }[numShip]; //ship:section
+    return `${((numSq) ? 'e' : '') + 'ship-section' + step}`
+}
 
 function cleanBoard(squares) { //server +- orig
     sqSelector = (squares !== userSquares); //because it can be press after another createShips pressed
@@ -270,41 +411,31 @@ function playGameBtn(socket) { //TODO playGameBtn
     if (gamemode == "singlePlayer") {
         isMyTurn = true;
         createShips(enemySquares) //server
+
+        startG.disabled = true
+        randForMe.disabled = true
+        cleanMe.disabled = true
+        rotateBtn.disabled = true
+        dragDropBtn.disabled = true
+        restartBtn.disabled = false
+        restartBtn.innerHTML = "Здатися"
     }
     else {
         socket.on('fireAnswer', (sqId, sqStatus) => { //TODO bug: mess are getting more and more often (i++ like when u NASLAIVAT them)
 
-            console.log("isMyTurn(m=e, !m=u)", isMyTurn);
-            console.log(sqId, sqStatus);
+            // console.log("isMyTurn(m=e, !m=u)", isMyTurn);
+            // console.log(sqId, sqStatus);
 
-            //let oneOfSquares
             if (isMyTurn) {
-                //console.log("enemySquares", enemySquares[sqId]);
                 boardArrToHTMLbySqStatus2(enemySquares, sqId, sqStatus)
-                //oneOfSquares = enemySquares
             } else {
-                //console.log("userSquares", userSquares[sqId]);
-                //oneOfSquares = userSquares
                 boardArrToHTMLbySqStatus2(userSquares, sqId, sqStatus)
             }
-
-            //console.log("oneOfSquares", oneOfSquares);
-
-
-
         });
     }
 
     turnDisplay.innerHTML = (isMyTurn) ? 'Ваш Хід' : 'Хід Суперника';
     isGameOver = false
-
-    // startG.disabled = true
-    // randForMe.disabled = true
-    // cleanMe.disabled = true
-    // rotateBtn.disabled = true
-    // dragDropBtn.disabled = true
-    // restartBtn.disabled = false
-    // restartBtn.innerHTML = "Здатися"
 
     myShips.forEach(ship => {
         ship.setAttribute('draggable', false);
@@ -328,15 +459,13 @@ function playGameBtn(socket) { //TODO playGameBtn
 //TODO Game Move Logic
 function playGame() {
     if (isGameOver) return
-
+    //turnDisplay.innerHTML = (isMyTurn)?'Your Move':'Enemy`s Move';
     turnDisplay.innerHTML = (isMyTurn) ? 'Ваш Хід' : 'Хід Суперника';
 
     if (gamemode == "singlePlayer" && !isMyTurn) {
         console.log('computerGo');
         setTimeout(computerGo, 500)
     }
-
-    //turnDisplay.innerHTML = (isMyTurn)?'Your Move':'Enemy`s Move';
 }
 
 function playerGo(square, socket) {
@@ -359,122 +488,12 @@ function playerGo(square, socket) {
         isMyTurn = !isMyTurn//isMyTurn = false;
     } else {
         sqId = Number(square.dataset.y + square.dataset.x);//01-09 not working
-        console.log(square.dataset.y, ' ', square.dataset.x, ' ', sqId);
+        //console.log(square.dataset.y, ' ', square.dataset.x, ' ', sqId);
         socket.emit('fire', sqId);
         // socket.emit('nextTurn', isMyTurn);
     }
     playGame();
 }
-
-function computerGo() { //sc orig
-    if (isGameOver) return
-    let coord = Math.floor(Math.random() * userSquares.length);
-    let boom1
-    let isAI = false
-    for (let i = 0; i < 100; i++) {
-        if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
-            boom1 = i
-            isAI = true
-            break
-        }
-    }
-    if (isAI) {
-        coord = computerAI(boom1)
-    }
-    if (userSquares[coord].classList.contains('boom') || userSquares[coord].classList.contains('miss')) {
-        return computerGo()
-    } else {
-        if (userSquares[coord].classList.contains('takenByShip')) {
-            userSquares[coord].classList.add('boom')
-            checkerDead(userSquares)
-            checkGameOver()
-            setTimeout(computerGo, 500)
-            return
-        } else {
-            userSquares[coord].classList.add('miss')
-        }
-    }
-    isMyTurn = true;
-    playGame()
-}
-
-function checkGameOver() { //server
-    let userDeadShipsScore = 0
-    let compDeadShipsScore = 0
-
-    userSquares.forEach(sq => {
-        if (sq.classList.contains('dead')) {
-            userDeadShipsScore += 1
-        }
-    })
-
-    enemySquares.forEach(sq => {
-        if (sq.classList.contains('dead')) {
-            compDeadShipsScore += 1
-        }
-    })
-
-    if (userDeadShipsScore === 20 || compDeadShipsScore === 20) {
-        //turnDisplay.innerHTML = userDeadShipsScore > compDeadShipsScore ? 'You Lose' : 'You Win';
-        turnDisplay.innerHTML = (userDeadShipsScore > compDeadShipsScore) ? 'Ви Програли' : 'Ви Перемогли';
-
-        isGameOver = true
-        //restartBtn.classList.remove("invisible")
-
-        let shipGOVision = document.querySelectorAll('.enemy-grid > .takenByShip')
-        shipGOVision.forEach(ship => {
-            if (!ship.classList.contains('boom')) {
-                ship.classList.add("takenGOVision");
-            }
-        });
-    }
-}
-
-
-//TODO ComputerAI
-function computerAI(boomFirst) { //OPTIMIZED //can add "biggest" logic //sc orig
-    let boomLast
-    let boom
-    let directionTemp
-    let rand
-    let step
-
-    for (let i = boomFirst + 1; i < 100; i++) {
-        if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
-            boomLast = i
-        }
-    }
-    if (boomLast === undefined) {
-        rand = Math.floor(Math.random() * 4);
-        step = { 0: -10, 1: 1, 2: 10, 3: -1 }[rand];
-        if (AILogicIsCanBePlaced(boomFirst, step)) {
-            return boomFirst + step;
-        }
-        else {
-            return computerAI(boomFirst);
-        }
-    }
-
-    directionTemp = (boomLast - boomFirst < 10) ? 1 : 10
-    rand = Math.floor(Math.random() * 2);
-    step = (rand) ? -1 * directionTemp : 1 * directionTemp;
-    boom = (step > 0) ? boomLast : boomFirst;
-
-    if (AILogicIsCanBePlaced(boom, step)) {
-        return boom + step;
-    }
-    else {
-        return computerAI(boomFirst);
-    }
-}
-
-function AILogicIsCanBePlaced(boom, step) {
-    return (boom + step >= 0 && boom + step < 100 &&
-        !((boom % 10 === 0 && (boom + step) % 10 === 9) ||
-            (boom % 10 === 9 && (boom + step) % 10 === 0)) &&
-        !userSquares[boom + step].classList.contains('miss'))  //make faster can be deleted
-}
-
 
 //TODO DragDrop
 const dragDropBtn = document.querySelector("#dragDrop");
@@ -554,7 +573,7 @@ function dragStart(e) {
 }
 
 function dragEnter(e) {
-    console.log('dragEnter');
+    //console.log('dragEnter');
     e.preventDefault();
     currentSquare = parseInt(this.dataset.y) * 10 + parseInt(this.dataset.x)
     // console.log("currentSquare", currentSquare)
@@ -565,7 +584,7 @@ function dragEnter(e) {
 // }
 
 function dragOver(e) {
-    console.log('dragOver');
+    //console.log('dragOver');
     e.preventDefault();
 }
 
@@ -598,7 +617,7 @@ function dragDrop(e) {
         let ditem = document.querySelector(`[id="${flag}"]`)
 
         for (let i = currentSquare - takingSectionId * step; i < (currentSquare - (takingSectionId - draggedShipLength) * step); i += step) {
-            console.log(currentSquare, takingSectionId, draggedShipLength, step)
+            //console.log(currentSquare, takingSectionId, draggedShipLength, step)
             userSquares[i].classList.add("takenByShip")
             userSquares[i].classList.add(`${flag}`)
         }
@@ -610,7 +629,7 @@ function dragDrop(e) {
         dsq.append(ditem)
 
         if (document.querySelectorAll('.user-ships > .ship-section > .ship').length == 0 &&
-            document.querySelectorAll('.user-ships > .user-grid > .takenByShip').length == 20) {
+            document.querySelectorAll('.user-grid > .takenByShip').length == 20) {
             startG.disabled = false
             //turnDisplay.innerHTML = 'Press Start';
             turnDisplay.innerHTML = 'Натисніть Старт';
@@ -721,7 +740,8 @@ function startSingleGame() {
     startG.addEventListener("click", playGameBtn);
     randForMe.addEventListener("click", () => createShips(userSquares));
     cleanMe.addEventListener("click", () => cleanBoard(userSquares));
-    restartBtn.addEventListener("click", restart);
+    //restartBtn.addEventListener("click", restart);location.reload()
+    restartBtn.addEventListener("click", () => location.reload());
 }
 
 function boardArrToHTMLbySqStatus2(GridSquares, SqIndex, SqStatus) { //client
@@ -733,12 +753,6 @@ function boardArrToHTMLbySqStatus2(GridSquares, SqIndex, SqStatus) { //client
     }
 }
 
-//adminBtn.addEventListener('click', testadmin)
-
-// function testadmin() {
-//     startMultiPlayer();
-// }
-
 function startMultiPlayer() {
     gamemode = 'multiPlayer'
 
@@ -747,36 +761,12 @@ function startMultiPlayer() {
 
     randForMe.disabled = false
     dragDropBtn.disabled = false
-    // adminBtn.removeEventListener('click', testadmin)
-    // adminBtn.addEventListener('click', () => {
-
-    //     cleanBoard(userSquares)
-    //     socket.emit('clean')
-    //     for (let i = 0; i < countShips; i++) {
-    //         let shipIdToLength = { 0: 4, 1: 3, 2: 3, 3: 2, 4: 2, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1 }[i]
-    //         socket.emit('generate', i, shipIdToLength)
-    //     }
-    //     showMyShips(userSquares)
-    //     startG.disabled = false
-    //     turnDisplay.innerHTML = 'Натисніть Старт';
-    //     shipChecker(userSquares);
-    //     rotateBtn.disabled = true
-    //     cleanMe.disabled = false
-
-
-    //     playerReady(playerNum)
-    //     socket.emit('player-ready', playerNum)
-    //     socket.on('start-game', () => {
-    //         playMultiPlayerGame(socket)
-    //     })
-
-    // })
 
     startG.addEventListener("click", () => {
 
         //showMyShips(userSquares)//TODO TESTS ONLY
         MyBoard = gridSquaresToArrOfNumbers(userSquares)
-        console.log(MyBoard);
+        //console.log(MyBoard);
         socket.emit('DragDropByHand', MyBoard)
 
 
@@ -887,7 +877,7 @@ function startMultiPlayer() {
 
     const socket = io();
 
-    let currentUserName = document.querySelector("#currentUserName").value
+    let currentUserName = document.querySelector("#currentUserName").value.slice(0, 20)
     let playerNum
     let enemyNum
 
@@ -948,12 +938,6 @@ function startMultiPlayer() {
         }
     })
 
-    // socket.on('shipCheckerToEnemyAnswer', () => {
-    //     console.log('shipCheckerToEnemyAnswer');
-    //     shipChecker(enemySquares)
-    // })
-
-
     socket.on('player-ready-answer', (plN) => {
         playerReady(plN)
         //shipChecker(enemySquares)
@@ -993,18 +977,20 @@ function startMultiPlayer() {
         console.log('shipCheackerByIdDead', shipId);
         let sqSelector = (plNum == playerNum);
         //let sqSelector = (squares != userSquares);
-        console.log("WTFISGOINGON(true = e): ", plNum, sqSelector, " ", shipIdGenerator(sqSelector, shipId));
+        //console.log("WTFISGOINGON(true = e): ", plNum, sqSelector, " ", shipIdGenerator(sqSelector, shipId));
         let shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, shipId)}"]`)
         shipById.classList.add('ship-checker-dead')
     })
 
     socket.on('gameOver', () => {
         console.log('gameOver');
-        if (isMyTurn) {
-            turnDisplay.innerHTML = 'Win';
-        } else {
-            turnDisplay.innerHTML = 'Lose';
-        }
+
+        turnDisplay.innerHTML = (isMyTurn) ? 'Ви Перемогли' : 'Ви Програли';
+        // if (isMyTurn) {
+        //     turnDisplay.innerHTML = 'Win';
+        // } else {
+        //     turnDisplay.innerHTML = 'Lose';
+        // }
         isMyTurn = false
         restartBtn.innerHTML = "З Початку"
         //restartBtn.disabled = false
@@ -1040,4 +1026,10 @@ function startMultiPlayer() {
     //         }
     //     }
     // })
+
+
+
+
+
 }
+

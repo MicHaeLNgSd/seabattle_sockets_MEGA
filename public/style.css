@@ -9,6 +9,7 @@ body{
 header,footer{
     display: flex;
     min-height: 10%;
+    max-height: 10%;
     width: 100%;
     background-color:rgb(121, 160, 233);
     /* //background-color:rgb(135, 187, 235); */

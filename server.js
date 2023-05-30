@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
     socket.emit('player-start', playerNumber, userInfo[indexOfFreeConnection].isPlayerTurn)
     socket.on('check-player', (currentUserName) => {
         userInfo[indexOfFreeConnection].statusInfo.conn = true;
-        userInfo[indexOfFreeConnection].name = currentUserName;
+        userInfo[indexOfFreeConnection].name = currentUserName.slice(0, 20);
         //userInfo[indexOfFreeConnection].isPlayerTurn = (playerNumber == 1)
 
         tempIndOponent = (playerNumber == 2) ? -1 : +1;
@@ -218,11 +218,13 @@ io.on('connection', (socket) => {
     })
 
     function enemyDisconnect() {
-        if (userInfo[indexOfFreeConnection + tempIndOponent].statusInfo.conn == true) {
+        if (userInfo[indexOfFreeConnection + tempIndOponent]) {
+            //if (userInfo[indexOfFreeConnection + tempIndOponent].statusInfo.conn == true) {
             console.log('enemyDisconnect');
             userInfo[indexOfFreeConnection].statusInfo = { conn: false, ready: false }
             socket.to(roomName).emit('check-player-answer', userInfo[indexOfFreeConnection], userInfo[indexOfFreeConnection + tempIndOponent].statusInfo)
             io.in(roomName).disconnectSockets(true);
+            //}
         }
     }
 
