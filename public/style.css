@@ -8,6 +8,8 @@ body{
 
 header,footer{
     display: flex;
+    /* min-height: 10%; */
+    max-height: 10%;
     width: 100%;
     background-color:rgb(121, 160, 233);
     /* //background-color:rgb(135, 187, 235); */
@@ -178,8 +180,8 @@ section{
 .ship-section-vertical{
     width: 17%;
     flex-direction: column; 
-    height: 190px;
-    max-height: 190px;
+    height: 200px;
+    max-height: 200px;
     flex-wrap: wrap; 
 }
 
@@ -583,6 +585,7 @@ button:hover {
     footer{
         flex-direction: column;
         height: max-content;
+        max-height: max-content;
     }
 
     header>h1{   

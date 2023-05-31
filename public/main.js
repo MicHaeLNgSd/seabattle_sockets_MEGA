@@ -167,10 +167,9 @@ function checkGameOver() { //server
     if (userDeadShipsScore === 20 || compDeadShipsScore === 20) {
         //turnDisplay.innerHTML = userDeadShipsScore > compDeadShipsScore ? 'You Lose' : 'You Win';
         turnDisplay.innerHTML = (userDeadShipsScore > compDeadShipsScore) ? 'Ви Програли' : 'Ви Перемогли';
-
+        restartBtn.innerHTML = "З Початку"
         isGameOver = true
         //restartBtn.classList.remove("invisible")
-
         let shipGOVision = document.querySelectorAll('.enemy-grid > .takenByShip')
         shipGOVision.forEach(ship => {
             if (!ship.classList.contains('boom')) {
@@ -516,9 +515,7 @@ function dragDropFunc() {
     console.log('dragDropFunc active');
     myShips.forEach(ship => {
         ship.setAttribute('draggable', true);
-    });
 
-    myShips.forEach(ship => {
         ship.addEventListener('dragstart', dragStart)
         ship.addEventListener('dragend', dragEnd)
         //ship.addEventListener('drag', drag)
@@ -635,8 +632,8 @@ function dragDrop(e) {
             turnDisplay.innerHTML = 'Натисніть Старт';
             rotateBtn.disabled = true
         }
+        cleanMe.disabled = false
     }
-    cleanMe.disabled = false
 }
 
 function dragEnd() {
@@ -654,9 +651,7 @@ function dragEnd() {
 function removeDragDrop() {
     myShips.forEach(ship => {
         ship.setAttribute('draggable', false);
-    });
 
-    myShips.forEach(ship => {
         ship.removeEventListener('dragstart', dragStart)
         ship.removeEventListener('dragend', dragEnd)
         //ship.addEventListener('drag', drag)
@@ -720,7 +715,8 @@ const multiPlayerBtn = document.querySelector("#multiPlayerBtn");
 singlePlayerBtn.addEventListener('click', startSingleGame)
 multiPlayerBtn.addEventListener('click', startMultiPlayer)
 
-function settings(enemyName = "ENEMY") {
+//enemyName = "ENEMY"
+function settings(enemyName = "ВОРОГ") {
     //let currentUserName = document.querySelector("#currentUserName").value
     //user1name.innerHTML = currentUserName == "" ? "YOU" : currentUserName
     user2name.innerHTML = enemyName
@@ -769,6 +765,13 @@ function startMultiPlayer() {
         //console.log(MyBoard);
         socket.emit('DragDropByHand', MyBoard)
 
+        myShips.forEach(ship => {
+            ship.setAttribute('draggable', false);
+
+            ship.removeEventListener('dragstart', dragStart)
+            ship.removeEventListener('dragend', dragEnd)
+            //ship.addEventListener('drag', drag)
+        });
 
         playerReady(playerNum)
         socket.emit('player-ready', playerNum)
@@ -896,7 +899,8 @@ function startMultiPlayer() {
 
     socket.on('check-player-answer', (OponentInfo, MyStatus) => {
         console.log("check-player-answer", OponentInfo, MyStatus);
-        user1name.innerHTML = (currentUserName == "") ? "YOU" : currentUserName //TODO can be rewrited to get name from seerver not from itself
+        //user1name.innerHTML = (currentUserName == "") ? "YOU" : currentUserName //TODO can be rewrited to get name from seerver not from itself
+        user1name.innerHTML = (currentUserName == "") ? "ВИ" : currentUserName
 
         if (MyStatus.conn) {
             document.querySelector(`.p${playerNum} .connected span`).classList.add('green')
@@ -909,7 +913,8 @@ function startMultiPlayer() {
         if (OponentInfo) { //Fixed was (player number == 2) null but not null: typeof OponentInfo == 'null' //probably can create some bugs...
 
             if (OponentInfo.statusInfo.conn) {
-                settings((OponentInfo.name == "") ? "OPONENT" : OponentInfo.name)
+                //settings((OponentInfo.name == "") ? "OPONENT" : OponentInfo.name)
+                settings((OponentInfo.name == "") ? "СУПЕРНИК" : OponentInfo.name)
                 document.querySelector(`.p${enemyNum} .connected span`).classList.add('green')
             }
             else {
