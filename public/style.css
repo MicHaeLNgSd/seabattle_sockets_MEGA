@@ -8,8 +8,6 @@ body{
 
 header,footer{
     display: flex;
-    min-height: 10%;
-    max-height: 10%;
     width: 100%;
     background-color:rgb(121, 160, 233);
     /* //background-color:rgb(135, 187, 235); */
@@ -18,9 +16,9 @@ header,footer{
 main{
     background-color:bisque;
     min-height: 80%;
-
     display: flex !important;
     flex-direction: column;
+    padding-bottom: 20px;
 }
 
 .playerName{
@@ -39,7 +37,6 @@ header > h1{
 footer{
     display: flex;
     justify-content: space-between;
-    height: 10vh;
 }
 
 .footer-sec{
@@ -48,6 +45,9 @@ footer{
     line-height: 22px;
     text-align: center;
     min-width: 21%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .user-grid,.enemy-grid{
@@ -72,7 +72,7 @@ section{
 }
 
 .mover{
-    min-width: 350px;
+    min-width: 380px;
     text-align: center;
     margin-top: 20px;
     padding-inline: 20px;
@@ -153,6 +153,7 @@ section{
     display: flex;
     min-height: 48px;
     width: 100%;
+    padding-bottom: 10px;
 }
 
 .ship-section > .ship{
@@ -404,8 +405,9 @@ span.green
 .firstButtons{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;  
-}    
+    justify-content: space-between;
+    width: 100%;
+}
 
 #firstWindow > input,#firstWindow >.firstButtons> button{
     width: 70%;
@@ -487,7 +489,6 @@ button:hover {
 @media screen and (max-width : 1580px) {
     #userInfo,#enemyInfo{
         margin-top: 20px;
-        margin-bottom: -10px;
     }
 }
 
