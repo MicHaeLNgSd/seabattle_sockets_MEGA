@@ -992,6 +992,10 @@ function startMultiPlayer() {
         shipById.classList.add('ship-checker-dead')
     })
 
+    socket.on('enemyDisconnect-answer', () => {
+        turnDisplay.innerHTML = 'Ви Перемогли';
+    })
+
     socket.on('gameOver', () => {
         console.log('gameOver');
 

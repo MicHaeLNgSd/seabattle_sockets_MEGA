@@ -223,6 +223,7 @@ io.on('connection', (socket) => {
             console.log('enemyDisconnect');
             userInfo[indexOfFreeConnection].statusInfo = { conn: false, ready: false }
             socket.to(roomName).emit('check-player-answer', userInfo[indexOfFreeConnection], userInfo[indexOfFreeConnection + tempIndOponent].statusInfo)
+            socket.to(roomName).emit('enemyDisconnect-answer');
             io.in(roomName).disconnectSockets(true);
             //}
         }
