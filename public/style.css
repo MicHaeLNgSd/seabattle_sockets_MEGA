@@ -4,6 +4,7 @@
 
 body{
     height: 100vh;
+    width: 100vw;
 }
 
 header,footer{
@@ -603,6 +604,14 @@ button:hover {
     #userInfo,#enemyInfo{
         margin-top: 10px;
         /* margin-bottom: 0px; */
+    }
+}
+@media screen and ( max-height : 650px) {
+    header{
+        max-height: max-content;
+    }
+    footer{
+        max-height: max-content;
     }
 }
 @media screen and (max-width : 480px) {

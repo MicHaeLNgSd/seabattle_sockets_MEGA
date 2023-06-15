@@ -488,7 +488,11 @@ function playerGo(square, socket) {
     } else {
         sqId = Number(square.dataset.y + square.dataset.x);//01-09 not working
         //console.log(square.dataset.y, ' ', square.dataset.x, ' ', sqId);
-        socket.emit('fire', sqId);
+        console.log(square.className);
+        if (square.className == "square") {
+            socket.emit('fire', sqId);
+        }
+
         // socket.emit('nextTurn', isMyTurn);
     }
     playGame();
@@ -936,7 +940,8 @@ function startMultiPlayer() {
 
     socket.on('tell-another-player', (OponentInfo) => {
         console.log('tell-another-player', OponentInfo);
-        settings((OponentInfo.name == "") ? "OPONENT" : OponentInfo.name)
+        //settings((OponentInfo.name == "") ? "OPONENT" : OponentInfo.name)
+        settings((OponentInfo.name == "") ? "СУПЕРНИК" : OponentInfo.name)
 
         if (OponentInfo.statusInfo.conn) {
             document.querySelector(`.p${enemyNum} .connected span`).classList.add('green')
